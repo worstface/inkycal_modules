@@ -5,7 +5,7 @@ This is third-party module for the Inkycal project (https://github.com/aceisace/
 <img src="https://github.com/worstface/inkycal_stocks/blob/master/Gallery/inkycal_stocks.jpg" width="800">
 </p>
 
-The stocks-module conveniently displays a list of selected stocks, currencies or indices with their current prices and total and procentual daily change.
+The stocks-module conveniently displays a list of selected stocks, currencies or indices with their current prices and total/procentual daily change.
 It depends on yfinance (https://github.com/ranaroussi/yfinance) which uses the yahoo!-finance data.
 It's easily setup with a list of stock symbols like this example: tickers = ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
 
