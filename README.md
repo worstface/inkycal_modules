@@ -1,13 +1,16 @@
-# Name of your module
+# Inkycal Stocks Module
 This is third-party module for the inkycal project
 
-First, add a **SCREENSHOT** (This is very important!)
+<p align="center">
+<img src="https://github.com/worstface/inkycal_stocks/blob/master/inkycal_stock.jpg" width="800">
+</p>
 
-Explain these things in a few sentences:
-* what this module does (why did you put effor into making this?)
-* what it requires (dependencies, account at some website etc.)
-* how to set it up (with a sample config)
-* development status (are you maintaining it?)
+The stocks-module conveniently displays a list of selected stocks, currencies or indices with their current prices and total and procentual daily change.
+It depends on yfinance (https://github.com/ranaroussi/yfinance) which uses the yahoo!-finance data.
+It's easily setup with a list of stock symbols like this example: tickers = ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
+
+Status: this is WIP and destined for the Inkycal 2.0 release.
+
 
 # Installation instructions
 How to install the module.
@@ -33,11 +36,10 @@ inkycal._add_module('/full/path/to/your/module.py', 'Classname_inside_module')
 ```
 		{
 			"location": "top/middle/bottom",
-			"type": "YourClassName",
+			"type": "Stocks",
                         "height": Null,
 			"config": {
-				"some_option": "some_value",
-				"some_other_option": some_integer_value 
+				"tickers": ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
 			}
 		},
 ```
@@ -46,6 +48,6 @@ inkycal._add_module('/full/path/to/your/module.py', 'Classname_inside_module')
 ```python3
 # In python, run the following commands:
 from inkycal import Inkycal
-Inkycal._remove_module('Classname')
+Inkycal._remove_module('Stocks')
 # Where classname is the name of the Class inside file
 ```
