@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Module template for Inky-Calendar Project
+Stocks Module for Inky-Calendar Project
 
-Create your own module with this template
-
-Copyright by aceisace
+WIP
 """
 
 #############################################################################
@@ -21,8 +19,6 @@ from inkycal.custom import *
 #############################################################################
 
 # Built-in libraries go here
-from random import shuffle
-
 
 #############################################################################
 #                         External library imports
@@ -32,10 +28,10 @@ from random import shuffle
 # use try...except ImportError to check if it has been installed
 # If it is not found, print a short message on how to install this dependency
 try:
-  import feedparser
+  import yfinance as yf
 except ImportError:
-  print('feedparser is not installed! Please install with:')
-  print('pip3 install feedparser')
+  print('yfinance is not installed! Please install with:')
+  print('pip3 install yfinance')
 
 
 #############################################################################
@@ -55,8 +51,8 @@ logger.setLevel(level=logging.INFO)
 # Please remember to keep the first letter a capital
 # Avoid giving too long names to classes
 
-class Simple(inkycal_module):
-  """ Simple Class
+class Stocks(inkycal_module):
+  """ Stocks Class
   Explain what this module does...
   """
 
@@ -111,10 +107,34 @@ class Simple(inkycal_module):
     im_colour = Image.new('RGB', size = im_size, color = 'white')
 
     #################################################################
+    
+    parsed_tickers = []
+    
+    for ticker in tickers:         
+          print('preparing data for {0}...'.format(ticker))
 
-    #                    Your code goes here                        #
+          yfTicker = yf.Ticker(ticker)
+
+          stockInfo = yfTicker.info
+          stockName = stockInfo['shortName']
+
+          stockHistory = yfTicker.history("2d")
+          previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
+          currentQuote = (stockHistory.tail(1)['Close'].iloc[0])   
+          currentGain = currentQuote-previousQuote       
+          currentGainPercentage = (1-currentQuote/previousQuote)*-100
+
+          tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(stockName, currentQuote, currentGain, currentGainPercentage)
+          print('{}\n'.format(tickerLine))
+          parsed_tickers.append(tickerLine)
     
     # Write/Draw something on the image
+          
+      """Write the correctly formatted text on the display"""
+      for _ in range(len(parsed_tickers)):
+        write(parsed_tickers[_])
+
+      del parsed_tickers
 
     #   You can use these custom functions to help you create the image:
     # - write()               -> write text on the image

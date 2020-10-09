@@ -2,7 +2,7 @@
 This is third-party module for the inkycal project
 
 <p align="center">
-<img src="https://github.com/worstface/inkycal_stocks/blob/master/inkycal_stock.jpg" width="800">
+<img src="https://github.com/worstface/inkycal_stocks/gallery/blob/master/inkycal_stocks.jpg" width="800">
 </p>
 
 The stocks-module conveniently displays a list of selected stocks, currencies or indices with their current prices and total and procentual daily change.
