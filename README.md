@@ -49,5 +49,4 @@ inkycal._add_module('/full/path/to/your/inkycal_stocks.py', 'Stocks')
 # In python, run the following commands:
 from inkycal import Inkycal
 Inkycal._remove_module('Stocks')
-# Where classname is the name of the Class inside file
 ```
