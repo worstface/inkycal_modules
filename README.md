@@ -1,5 +1,5 @@
 # Inkycal Stocks Module
-This is third-party module for the Inkycal project (https://github.com/aceisace/Inky-Calendar)
+This is third-party module for the [Inkycal project](https://github.com/aceisace/Inky-Calendar)
 
 <p align="center">
 <img src="https://github.com/worstface/inkycal_stocks/blob/master/Gallery/inkycal_stocks.jpg" width="800">
