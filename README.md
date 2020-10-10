@@ -20,15 +20,15 @@ How to install the module.
 
 2) Download the third-party module:
 ```bash
-# The URL is the rawfile url. e.g. open mymodule.py, then click on [raw] to see the rawfile-url
-wget https://raw.githubusercontent.com/aceisace/inkycal_template/master/mymodule.py
+# The URL is the rawfile url. open inkycal_stocks.py, then click on [raw] to see the rawfile-url
+wget https://raw.githubusercontent.com/worstface/inkycal_stocks/master/inkycal_stocks.py
 ```
 
 3) Register this module in Inkycal
 ```python3
 # In python, type the following commands:
 from inkycal import Inkycal
-inkycal._add_module('/full/path/to/your/module.py', 'Classname_inside_module')
+inkycal._add_module('/full/path/to/your/inkycal_stocks.py', 'Stocks')
 # If everything went well, you should see a printed message without red lines
 ```
 
