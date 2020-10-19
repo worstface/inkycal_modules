@@ -115,8 +115,12 @@ class Stocks(inkycal_module):
 
           yfTicker = yf.Ticker(ticker)
 
-          stockInfo = yfTicker.info
-          stockName = stockInfo['shortName']
+          try:
+            stockInfo = yfTicker.info
+            stockName = stockInfo['shortName']
+          except Exception:
+            stockName = ticker
+            print('Error on getting ticker info! Using symbol as name.')
 
           stockHistory = yfTicker.history("2d")
           previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
