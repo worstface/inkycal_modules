@@ -105,12 +105,25 @@ class Stocks(inkycal_module):
     # Create an image for black pixels and one for coloured pixels (required)
     im_black = Image.new('RGB', size = im_size, color = 'white')
     im_colour = Image.new('RGB', size = im_size, color = 'white')
+    
+    # Set some parameters for formatting rss feeds
+    line_spacing = 1
+    line_height = self.font.getsize('hg')[1] + line_spacing
+    line_width = im_width
+    max_lines = (im_height // (self.font.getsize('hg')[1] + line_spacing))
+
+    # Calculate padding from top so the lines look centralised
+    spacing_top = int( im_height % line_height / 2 )
+
+    # Calculate line_positions
+    line_positions = [
+      (0, spacing_top + _ * line_height ) for _ in range(max_lines)]
 
     #################################################################
     
     parsed_tickers = []
     
-    for ticker in tickers:         
+    for ticker in self.config['tickers']:         
           print('preparing data for {0}...'.format(ticker))
 
           yfTicker = yf.Ticker(ticker)
@@ -132,13 +145,12 @@ class Stocks(inkycal_module):
           print('{}\n'.format(tickerLine))
           parsed_tickers.append(tickerLine)
     
-    # Write/Draw something on the image
-          
-      """Write the correctly formatted text on the display"""
-      for _ in range(len(parsed_tickers)):
-        write(parsed_tickers[_])
+    # Write/Draw something on the image    
+    for _ in range(len(parsed_tickers)):
+      write(im_black, line_positions[_], (line_width, line_height),
+              parsed_tickers[_], font = self.font, alignment= 'left')
 
-      del parsed_tickers
+    del parsed_tickers
 
     #   You can use these custom functions to help you create the image:
     # - write()               -> write text on the image
