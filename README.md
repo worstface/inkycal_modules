@@ -24,7 +24,12 @@ How to install the module.
 wget https://raw.githubusercontent.com/worstface/inkycal_stocks/master/inkycal_stocks.py
 ```
 
-3) Register this module in Inkycal
+3) Install yfinance:
+```bash
+pip3 install yfinance
+```
+
+4) Register this module in Inkycal
 ```python3
 # In python, type the following commands:
 from inkycal import Inkycal
