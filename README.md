@@ -56,14 +56,14 @@ Manual steps for Inkycal 2.0.0b:
 
 4) Add the following in your `settings.json` file, inside the `panels` section
 ```
-		{
-			"location": "top/middle/bottom",
-			"type": "Stocks",
-                        "height": Null,
-			"config": {
-				"tickers": ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
-			}
-		},
+{
+	"location": "top/middle/bottom",
+	"type": "Stocks",
+        "height": Null,
+	"config": {
+		"tickers": ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
+	}
+},
 ```
 
 # How to remove this module
