@@ -3,7 +3,9 @@
 """
 Stocks Module for Inky-Calendar Project
 
-WIP
+Version 0.1: Migration to Inkycal 2.0.0b
+
+by https://github.com/worstface
 """
 
 #############################################################################
