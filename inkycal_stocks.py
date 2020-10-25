@@ -124,6 +124,7 @@ class Stocks(inkycal_module):
     #################################################################
     
     parsed_tickers = []
+    parsed_tickers_colour = []
     
     for ticker in self.config['tickers']:         
           print('preparing data for {0}...'.format(ticker))
@@ -146,13 +147,25 @@ class Stocks(inkycal_module):
           tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(stockName, currentQuote, currentGain, currentGainPercentage)
           print('{}\n'.format(tickerLine))
           parsed_tickers.append(tickerLine)
+          
+          if currentGain < 0:
+            parsed_tickers_colour.append(tickerLine)
+          else:
+            parsed_tickers_colour.append("")
     
-    # Write/Draw something on the image    
+    # Write/Draw something on the black image    
     for _ in range(len(parsed_tickers)):
       write(im_black, line_positions[_], (line_width, line_height),
               parsed_tickers[_], font = self.font, alignment= 'left')
-
+              
     del parsed_tickers
+              
+    # Write/Draw something on the colour image    
+    for _ in range(len(parsed_tickers_colour)):
+      write(im_colour, line_positions[_], (line_width, line_height),
+              parsed_tickers_colour[_], font = self.font, alignment= 'left')
+
+    del parsed_tickers_colour
 
     #   You can use these custom functions to help you create the image:
     # - write()               -> write text on the image
