@@ -46,7 +46,6 @@ How do I now import my module?
 ```python
 from inkycal.modules import Stocks
 ```
-Where Class is the name of the class inside your module (e.g. Simple)
 
 ```python3
 # In python, type the following commands:
