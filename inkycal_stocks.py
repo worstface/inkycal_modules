@@ -55,12 +55,12 @@ logger.setLevel(level=logging.INFO)
 
 class Stocks(inkycal_module):
   """ Stocks Class
-  Explain what this module does...
+  Shows a list of stock/currency tickers with current quote and gain.
   """
 
   # Initialise the class (do not remove)
   def __init__(self, section_size, section_config):
-    """Initialize inkycal_rss module"""
+    """Initialize inkycal_stocks module"""
 
     # Initialise this module via the inkycal_module template (required)
     super().__init__(section_size, section_config)
@@ -108,7 +108,7 @@ class Stocks(inkycal_module):
     im_black = Image.new('RGB', size = im_size, color = 'white')
     im_colour = Image.new('RGB', size = im_size, color = 'white')
     
-    # Set some parameters for formatting rss feeds
+    # Set some parameters for formatting ticker lines
     line_spacing = 1
     line_height = self.font.getsize('hg')[1] + line_spacing
     line_width = im_width
