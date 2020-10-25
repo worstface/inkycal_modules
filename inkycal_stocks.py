@@ -127,7 +127,7 @@ class Stocks(inkycal_module):
     parsed_tickers_colour = []
     
     for ticker in self.config['tickers']:         
-          print('preparing data for {0}...'.format(ticker))
+          logger.info('preparing data for {0}...'.format(ticker))
 
           yfTicker = yf.Ticker(ticker)
 
@@ -136,7 +136,7 @@ class Stocks(inkycal_module):
             stockName = stockInfo['shortName']
           except Exception:
             stockName = ticker
-            print('Error on getting ticker info! Using symbol as name.')
+            logger.warning('Failed to get ticker info! Using the ticker symbol as name instead.')
 
           stockHistory = yfTicker.history("2d")
           previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
@@ -145,7 +145,7 @@ class Stocks(inkycal_module):
           currentGainPercentage = (1-currentQuote/previousQuote)*-100
 
           tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(stockName, currentQuote, currentGain, currentGainPercentage)
-          print('{}\n'.format(tickerLine))
+          logger.info(tickerLine)
           parsed_tickers.append(tickerLine)
           
           if currentGain < 0:
