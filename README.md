@@ -9,9 +9,6 @@ The stocks-module conveniently displays a list of selected stocks, currencies or
 It depends on [yfinance](https://github.com/ranaroussi/yfinance) which uses the [Yahoo! Finance](https://finance.yahoo.com/) data. You can display any information by using the respective symbols that are used by [Yahoo! Finance](https://finance.yahoo.com/).
 It's easily setup with a list of symbols like this e.g.: tickers = ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
 
-Status: this is WIP and destined for the Inkycal 2.0.0 release. It currently does work with the 2.0.0b branch.
-
-
 # Installation instructions
 How to install the module.
 
@@ -30,7 +27,7 @@ pip3 install yfinance
 ```
 
 4) Register this module in Inkycal
-Manual steps for Inkycal 2.0.0b:
+Manual steps for Inkycal 2.0.0:
 
 ```# 1) Inkycal/modules/__init__.py
 # Add this into the modules init file:
