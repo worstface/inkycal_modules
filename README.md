@@ -32,19 +32,17 @@ pip3 install yfinance
 4) Register this module in Inkycal
 Manual steps for Inkycal 2.0.0b:
 
-a) Inkycal/modules/__init__.py
-Add this into the modules init file:
-```python
-from .inkycal_stocks import Stocks
-```
-b) Inkycal/__init__.py
-Before the line # Main file, add this:
-```python
-import inkycal.modules.inkycal_stocks
-```
-How do I now import my module?
-```python
-from inkycal.modules import Stocks
+```# 1) Inkycal/modules/__init__.py
+# Add this into the modules init file:
+# from .filename import Class
+# where filename is the name of your module
+# where Class is the name of your class e.g. Simple in this case
+
+
+# 2) Inkycal/__init__.py
+# Before the line # Main file, add this:
+# import inkycal.modules.filename
+# Where the filename is the name of your file inside the modules folder
 ```
 
 ```python3
