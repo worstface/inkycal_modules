@@ -55,13 +55,20 @@ inkycal._add_module('/full/path/to/your/inkycal_stocks.py', 'Stocks')
 5) Add the following in your `settings.json` file, inside the `panels` section
 ```
 {
-	"location": "top/middle/bottom",
-	"type": "Stocks",
-        "height": Null,
-	"config": {
-		"tickers": ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]
-	}
-},
+            "position": 3,
+            "name": "Stocks",
+            "config": {
+                "size": [
+                    528,
+                    326
+                ],
+                "tickers": ["TSLA", "U", "NVDA", "EURUSD=X"],
+                "padding_x": 10,
+                "padding_y": 10,
+                "fontsize": 18,
+                "language": "en"
+            }
+        },
 ```
 
 # How to remove this module
