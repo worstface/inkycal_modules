@@ -106,7 +106,6 @@ class Stocks(inkycal_module):
                        "the ticker symbol as name instead.")
 
       stockHistory = yfTicker.history("2d")
-      self.ttt = stockHistory
       previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
       currentQuote = (stockHistory.tail(1)['Close'].iloc[0])
       currentGain = currentQuote-previousQuote
