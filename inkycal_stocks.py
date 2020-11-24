@@ -3,6 +3,7 @@
 """
 Stocks Module for Inky-Calendar Project
 
+Version 0.3: Added support for web-UI of Inkycal 2.0.0
 Version 0.2: Migration to Inkycal 2.0.0
 Version 0.1: Migration to Inkycal 2.0.0b
 
@@ -19,36 +20,38 @@ except ImportError:
 
 filename = os.path.basename(__file__).split('.py')[0]
 logger = logging.getLogger(filename)
-logger.setLevel(level=logging.ERROR)
 
 class Stocks(inkycal_module):
 
-  name = "Stocks - Displays stock market infos"
+  name = "Stocks - Displays stock market infos from Yahoo finance"
+
+  # optional parameters
+  optional = {
+
+    "tickers": {
+
+      "label": "You can display any information by using "
+               "the respective symbols that are used by Yahoo! Finance. "
+               "Separate multiple symbols with a comma sign e.g. "
+               "TSLA, U, NVDA, EURUSD=X"
+              }
+    }
 
   def __init__(self, config):
-  
+
     super().__init__(config)
 
     config = config['config']
 
-    # give an OK message (optional)
-    print('{0} loaded'.format(filename))
+    # If tickers is a string from web-ui, convert to a list, else use
+    # tickers as-is i.e. for tests
+    if config['tickers'] and isinstance(config['tickers'], str):
+      self.tickers = config['tickers'].split(',') #returns list
+    else:
+      self.tickers = config['tickers']
 
-#############################################################################
-#                 Validation of module specific parameters                  #
-#############################################################################
-
-  def _validate(self):
-    """Validate module-specific parameters"""
-
-    # Here, we are checking if do_something (from init) is True/False
-    if not isinstance(self.do_something, bool):
-      print('do_something has to be a boolean: True/False')
-
-
-#############################################################################
-#                       Generating the image                                #
-#############################################################################
+    # give an OK message
+    print(f'{filename} loaded')
 
   def generate_image(self):
     """Generate image for this module"""
@@ -62,7 +65,7 @@ class Stocks(inkycal_module):
     # Create an image for black pixels and one for coloured pixels (required)
     im_black = Image.new('RGB', size = im_size, color = 'white')
     im_colour = Image.new('RGB', size = im_size, color = 'white')
-    
+
     # Check if internet is available
     if internet_available() == True:
       logger.info('Connection test passed')
@@ -86,53 +89,58 @@ class Stocks(inkycal_module):
 
     logger.debug(f'line positions: {line_positions}')
 
-    #################################################################
-    
     parsed_tickers = []
     parsed_tickers_colour = []
-    
-    for ticker in self.config['tickers']:         
-          logger.info('preparing data for {0}...'.format(ticker))
 
-          yfTicker = yf.Ticker(ticker)
+    for ticker in self.tickers:
+      logger.info(f'preparing data for {ticker}...')
 
-          try:
-            stockInfo = yfTicker.info
-            stockName = stockInfo['shortName']
-          except Exception:
-            stockName = ticker
-            logger.warning('Failed to get ticker info! Using the ticker symbol as name instead.')
+      yfTicker = yf.Ticker(ticker)
 
-          stockHistory = yfTicker.history("2d")
-          previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
-          currentQuote = (stockHistory.tail(1)['Close'].iloc[0])   
-          currentGain = currentQuote-previousQuote       
-          currentGainPercentage = (1-currentQuote/previousQuote)*-100
+      try:
+        stockInfo = yfTicker.info
+        stockName = stockInfo['shortName']
+      except Exception:
+        stockName = ticker
+        logger.warning(f"Failed to get '{stockName}' ticker info! Using "
+                       "the ticker symbol as name instead.")
 
-          tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(stockName, currentQuote, currentGain, currentGainPercentage)
-          logger.info(tickerLine)
-          parsed_tickers.append(tickerLine)
-          
-          if currentGain < 0:
-            parsed_tickers_colour.append(tickerLine)
-          else:
-            parsed_tickers_colour.append("")
-    
-    # Write/Draw something on the black image    
+      stockHistory = yfTicker.history("2d")
+      self.ttt = stockHistory
+      previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
+      currentQuote = (stockHistory.tail(1)['Close'].iloc[0])
+      currentGain = currentQuote-previousQuote
+      currentGainPercentage = (1-currentQuote/previousQuote)*-100
+
+      tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(
+        stockName, currentQuote, currentGain, currentGainPercentage)
+
+      logger.info(tickerLine)
+      parsed_tickers.append(tickerLine)
+
+      if currentGain < 0:
+        parsed_tickers_colour.append(tickerLine)
+      else:
+        parsed_tickers_colour.append("")
+
+    # Write/Draw something on the black image
     for _ in range(len(parsed_tickers)):
+      if _+1 > max_lines:
+        logger.error('Ran out of lines for parsed_ticker_colour')
+        break
       write(im_black, line_positions[_], (line_width, line_height),
               parsed_tickers[_], font = self.font, alignment= 'left')
-              
-    del parsed_tickers
-              
-    # Write/Draw something on the colour image    
+
+    # Write/Draw something on the colour image
     for _ in range(len(parsed_tickers_colour)):
+      if _+1 > max_lines:
+        logger.error('Ran out of lines for parsed_tickers_colour')
+        break
       write(im_colour, line_positions[_], (line_width, line_height),
               parsed_tickers_colour[_], font = self.font, alignment= 'left')
 
-    del parsed_tickers_colour
-    
-    #################################################################
-
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
+
+if __name__ == '__main__':
+  print(f'running {filename} in standalone/debug mode')
