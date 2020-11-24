@@ -46,7 +46,7 @@ class Stocks(inkycal_module):
     # If tickers is a string from web-ui, convert to a list, else use
     # tickers as-is i.e. for tests
     if config['tickers'] and isinstance(config['tickers'], str):
-      self.tickers = config['tickers'].split(',') #returns list
+      self.tickers = config['tickers'].replace(" ", "").split(',') #returns list
     else:
       self.tickers = config['tickers']
 
