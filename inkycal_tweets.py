@@ -95,17 +95,38 @@ class Tweets(inkycal_module):
     twint.run.Search(twintConfig)
     tweets = twint.output.tweets_list
     
+    tweet_lines = []
+    tweet_lines_colour = []
+    
     lastTweet = tweets[0]
     
-    logger.info(lastTweet.username)
-    logger.info(lastTweet.name)
-    logger.info(lastTweet.tweet)
-    logger.info(lastTweet.timestamp)
-    logger.info(lastTweet.link)
+    tweetHeader = '{} @{}·{}'.format(lastTweet.name, lastTweet.username, lastTweet.timestamp)
+    tweetText = '"{}"'.format(lastTweet.tweet)
+    tweetFooter = 'Replies: {} Retweets: {} Likes: {}'.format(lastTweet.replies_count, lastTweet.retweets_count, lastTweet.likes_count)
+    
+    tweet_lines.append(tweetHeader)
+    tweet_lines.append(tweetText)
+    tweet_lines.append(tweetFooter)
+    
+    tweet_lines_colour.append(tweetHeader)
+    tweet_lines_colour.append("")
+    tweet_lines_colour.append(tweetFooter)
 
-    # Write/Draw something on the black image    
+    # Write/Draw something on the black image   
+    for _ in range(len(tweet_lines)):
+      if _+1 > max_lines:
+        logger.error('Ran out of lines for parsed_ticker_colour')
+        break
+      write(im_black, line_positions[_], (line_width, line_height),
+              tweet_lines[_], font = self.font, alignment= 'left')    
 
-    # Write/Draw something on the colour image    
+    # Write/Draw something on the colour image
+    for _ in range(len(tweet_lines_colour)):
+      if _+1 > max_lines:
+        logger.error('Ran out of lines for parsed_tickers_colour')
+        break
+      write(im_colour, line_positions[_], (line_width, line_height),
+              tweet_lines_colour[_], font = self.font, alignment= 'left')    
 
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
