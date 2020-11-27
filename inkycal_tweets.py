@@ -125,6 +125,20 @@ class Tweets(inkycal_module):
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
+    
+    logger.info(f'generating qr code...')
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=2,
+        border=4)
+        
+    qr.add_data(lastTweet.link)
+    
+    qrImage = qr.make_image(fill_color="black", back_color="white")
+    qrSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
+    qrSpace.paste(qrImage,(400,0))
+    im_black.paste(qrSpace)
 
     # Write/Draw something on the black image   
     for _ in range(len(tweet_lines)):
