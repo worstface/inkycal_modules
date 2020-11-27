@@ -1,6 +1,6 @@
-# Inkycal Stocks Module
-This is a third-party module for the [Inkycal project](https://github.com/aceisace/Inky-Calendar)
+These are third-party modules for the [Inkycal project](https://github.com/aceisace/Inky-Calendar)
 
+# Inkycal Stocks Module
 <p align="center">
             <img src="https://raw.githubusercontent.com/worstface/inkycal_stocks/master/Gallery/inkycal_stocks.jpg" width="800">
 </p>
@@ -13,6 +13,18 @@ You can display any information by using the respective symbols that are used by
 
 It's easily setup with a list of symbols like this e.g.: 
 `tickers = ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]`
+
+# Inkycal Tweets Module
+<p align="center">
+            <img src="https://raw.githubusercontent.com/worstface/inkycal_stocks/master/Gallery/inkycal_tweets.jpg" width="800">
+</p>
+
+The tweets-module displays tweets from twitter by using the [Twint library](https://github.com/twintproject/twint).
+
+This is WIP.
+
+The current git state of Twint is needed for this module (the current package doesn't work):  
+'pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint'
 
 # Installation instructions
 
