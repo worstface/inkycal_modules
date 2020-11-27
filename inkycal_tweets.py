@@ -31,9 +31,11 @@ class Tweets(inkycal_module):
   optional = {
 
     "username": {
-
-      "label": "You can display any information by using "               
-              }
+        "label": "username to show tweets of "               
+        },
+    "minlikes": {
+        "label": "You can display any information by using "               
+        }              
     }
 
   def __init__(self, config):
@@ -43,10 +45,11 @@ class Tweets(inkycal_module):
     config = config['config']
    
     self.username = config['username']
+    self.minlikes = config['minlikes']
 
     # give an OK message
     print(f'{filename} loaded')
-
+    
   def generate_image(self):
     """Generate image for this module"""
 
@@ -85,9 +88,9 @@ class Tweets(inkycal_module):
       
     logger.info(f'preparing twint configuration...')
 
-    twintConfig = twint.Config()
-    
+    twintConfig = twint.Config()    
     twintConfig.Username = self.username
+    twintConfig.Min_likes = self.minlikes
     twintConfig.Limit = 20
     twintConfig.Store_object = True
     twintConfig.Hide_output = True
@@ -102,15 +105,26 @@ class Tweets(inkycal_module):
     
     tweetHeader = '{} @{}·{}'.format(lastTweet.name, lastTweet.username, lastTweet.timestamp)
     tweetText = '"{}"'.format(lastTweet.tweet)
-    tweetFooter = 'Replies: {} Retweets: {} Likes: {}'.format(lastTweet.replies_count, lastTweet.retweets_count, lastTweet.likes_count)
     
     tweet_lines.append(tweetHeader)
     tweet_lines.append(tweetText)
-    tweet_lines.append(tweetFooter)
     
     tweet_lines_colour.append(tweetHeader)
-    tweet_lines_colour.append("")
-    tweet_lines_colour.append(tweetFooter)
+    
+    textSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
+    materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = 24)       
+    
+    ImageDraw.Draw(textSpace).text((100, 57), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((130, 54), '{}'.format(lastTweet.replies_count), fill='black', font=self.font)
+        
+    ImageDraw.Draw(textSpace).text((200, 56), '\ue86a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((230, 54), '{}'.format(lastTweet.retweets_count), fill='black', font=self.font)
+    
+    ImageDraw.Draw(textSpace).text((300, 56), '\ue83a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((330, 54), '{}'.format(lastTweet.likes_count), fill='black', font=self.font) 
+
+    im_black.paste(textSpace)
+    im_colour.paste(textSpace)    
 
     # Write/Draw something on the black image   
     for _ in range(len(tweet_lines)):
