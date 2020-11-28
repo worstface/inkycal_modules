@@ -33,6 +33,9 @@ class Tweets(inkycal_module):
     "username": {
         "label": "username to show tweets of "               
         },
+    "search": {
+        "label": "search term to show tweets of "               
+        },
     "minlikes": {
         "label": "You can display any information by using "               
         }              
@@ -45,6 +48,7 @@ class Tweets(inkycal_module):
     config = config['config']
    
     self.username = config['username']
+    self.search = config['search']
     self.minlikes = config['minlikes']
 
     # give an OK message
@@ -95,17 +99,24 @@ class Tweets(inkycal_module):
     logger.debug(f'line positions: {line_positions}')
       
     logger.info(f'preparing twint configuration...')
-
-    twintConfig = twint.Config()    
-    twintConfig.Username = self.username
-    twintConfig.Min_likes = self.minlikes
+    twintConfig = twint.Config()  
+    
+    if self.username:
+        twintConfig.Username = self.username
+    if self.search:
+        twintConfig.Search = self.search
+    if self.minlikes:    
+        twintConfig.Min_likes = self.minlikes
+        
     twintConfig.Limit = 20
     twintConfig.Store_object = True
     twintConfig.Hide_output = True
 
+    logger.info(f'running twint search...')
     twint.run.Search(twintConfig)
     tweets = twint.output.tweets_list
     
+    logger.info(f'preparing tweet image...')
     tweet_lines = []
     tweet_lines_colour = []
     
@@ -145,7 +156,7 @@ class Tweets(inkycal_module):
     
     qrImage = qr.make_image(fill_color="black", back_color="white")
     qrSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
-    qrSpace.paste(qrImage,(420,0))
+    qrSpace.paste(qrImage,(430,0))
     im_black.paste(qrSpace)
 
     # Write/Draw something on the black image   
