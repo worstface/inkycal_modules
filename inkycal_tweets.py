@@ -123,7 +123,7 @@ class Tweets(inkycal_module):
     lastTweet = tweets[0]
     
     logger.info(f'preparing tweet header...')
-    tweetHeader = '{} @{}·{}'.format(lastTweet.name, lastTweet.username, lastTweet.timestamp)
+    tweetHeader = '{} @{} · {} · {}'.format(lastTweet.name, lastTweet.username, lastTweet.datestamp, lastTweet.timestamp)
     tweet_lines.append(tweetHeader)
     tweet_lines_colour.append(tweetHeader)
     
