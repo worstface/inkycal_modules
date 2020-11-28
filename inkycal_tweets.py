@@ -52,6 +52,14 @@ class Tweets(inkycal_module):
     
   def generate_image(self):
     """Generate image for this module"""
+    
+    def human_format(num):
+        num = float('{:.3g}'.format(num))
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
     # Define new image size with respect to padding
     im_width = int(self.width - (2 * self.padding_left))
@@ -115,13 +123,13 @@ class Tweets(inkycal_module):
     materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = 24)       
     
     ImageDraw.Draw(textSpace).text((100, 57), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((130, 54), '{}'.format(lastTweet.replies_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((128, 54), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
     ImageDraw.Draw(textSpace).text((200, 56), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((230, 54), '{}'.format(lastTweet.retweets_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((228, 54), human_format(lastTweet.retweets_count), fill='black', font=self.font)
     
     ImageDraw.Draw(textSpace).text((300, 56), '\ue83a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((330, 54), '{}'.format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((328, 54), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
@@ -137,7 +145,7 @@ class Tweets(inkycal_module):
     
     qrImage = qr.make_image(fill_color="black", back_color="white")
     qrSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
-    qrSpace.paste(qrImage,(400,0))
+    qrSpace.paste(qrImage,(420,0))
     im_black.paste(qrSpace)
 
     # Write/Draw something on the black image   
