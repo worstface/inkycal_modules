@@ -122,25 +122,53 @@ class Tweets(inkycal_module):
     
     lastTweet = tweets[0]
     
+    logger.info(f'preparing tweet header...')
     tweetHeader = '{} @{}·{}'.format(lastTweet.name, lastTweet.username, lastTweet.timestamp)
-    tweetText = '"{}"'.format(lastTweet.tweet)
-    
     tweet_lines.append(tweetHeader)
-    tweet_lines.append(tweetText)
-    
     tweet_lines_colour.append(tweetHeader)
     
-    textSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
+    logger.info(f'preparing tweet text...')
+    tweetText = lastTweet.tweet
+    
+    tweetTextSize = self.font.getsize(tweetText)
+    logger.info(f'tweet text size: {tweetTextSize}')
+        
+    splitText = tweetText.split()
+    
+    tweetLine = ""
+    qrcodeWidth = 60
+    tweetLines= []
+    for word in splitText:
+        tweetSizeX, tweetSizeY = self.font.getsize(tweetLine +" "+ word)
+        if (tweetSizeX > line_width - qrcodeWidth and len(tweetLines) < 2) or (tweetSizeX > line_width):
+            tweetLines.append(tweetLine)
+            tweetLine = word
+        else:
+            tweetLine = tweetLine +" "+ word
+            
+    if tweetLine:
+        tweetLines.append(tweetLine)
+        
+    for tweetLineText in tweetLines:
+        logger.info(f'tweetline: {tweetLineText}')
+        tweet_lines.append(tweetLineText)        
+    
+    logger.info(f'preparing tweet footer...')
+    textSpace = Image.new('RGBA', (528, 400), (255,255,255,255))
     materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = 24)       
     
-    ImageDraw.Draw(textSpace).text((100, 57), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((128, 54), human_format(lastTweet.replies_count), fill='black', font=self.font)
-        
-    ImageDraw.Draw(textSpace).text((200, 56), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((228, 54), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    footerOffset = 8
+    footerVPos = (len(tweetLines)+1) * line_height + footerOffset
+    logger.info(f'footer vertical offset: {footerVPos}')
     
-    ImageDraw.Draw(textSpace).text((300, 56), '\ue83a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((328, 54), human_format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((100, (footerVPos)), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((128, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
+        
+    ImageDraw.Draw(textSpace).text((200, (footerVPos)), '\ue86a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((228, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    
+    ImageDraw.Draw(textSpace).text((300, (footerVPos)), '\ue83a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((328, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
@@ -162,7 +190,7 @@ class Tweets(inkycal_module):
     # Write/Draw something on the black image   
     for _ in range(len(tweet_lines)):
       if _+1 > max_lines:
-        logger.error('Ran out of lines for parsed_ticker_colour')
+        logger.error('Ran out of lines for tweet_lines_black')
         break
       write(im_black, line_positions[_], (line_width, line_height),
               tweet_lines[_], font = self.font, alignment= 'left')    
@@ -170,7 +198,7 @@ class Tweets(inkycal_module):
     # Write/Draw something on the colour image
     for _ in range(len(tweet_lines_colour)):
       if _+1 > max_lines:
-        logger.error('Ran out of lines for parsed_tickers_colour')
+        logger.error('Ran out of lines for tweet_lines_colour')
         break
       write(im_colour, line_positions[_], (line_width, line_height),
               tweet_lines_colour[_], font = self.font, alignment= 'left')    
