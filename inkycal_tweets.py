@@ -7,6 +7,9 @@ by https://github.com/worstface
 """
 from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
+from dateutil.parser import *
+from dateutil.tz import *
+from datetime import *
 
 try:
   import twint
@@ -93,8 +96,7 @@ class Tweets(inkycal_module):
     spacing_top = int( im_height % line_height / 2 )
 
     # Calculate line_positions
-    line_positions = [
-      (0, spacing_top + _ * line_height ) for _ in range(max_lines)]
+    line_positions = [(0, spacing_top + _ * line_height ) for _ in range(max_lines)]
 
     logger.debug(f'line positions: {line_positions}')
       
@@ -123,7 +125,29 @@ class Tweets(inkycal_module):
     lastTweet = tweets[0]
     
     logger.info(f'preparing tweet header...')
-    tweetHeader = '{} @{} · {} · {}'.format(lastTweet.name, lastTweet.username, lastTweet.datestamp, lastTweet.timestamp)
+    
+    createdAt = parse(lastTweet.datestamp +" "+ lastTweet.timestamp)
+    timeDelta = datetime.now() - createdAt
+    deltaSeconds = timeDelta.total_seconds()
+    
+    logger.info(f'parsed timestamps: {timeDelta}')
+    
+    timeString = ""
+    
+    if (timeDelta < timedelta(minutes = 1)):
+        timeString = '{}s'.format(deltaSeconds)
+    elif (timeDelta < timedelta(hours = 1)):
+        timeString = '{}m'.format(int((deltaSeconds%3600) // 60))
+    elif (timeDelta < timedelta(hours = 24)):
+        timeString = '{}h'.format(int(deltaSeconds//3600))
+    elif (timeDelta < timedelta(years = 1)):
+        timeString = createdAt.strftime("%b %d")
+    else: timeString = createdAt.strftime("%b %d %Y")
+        
+    logger.info(f'timeString: {timeString}')
+    
+    tweetHeader = '{} @{} · {}'.format(lastTweet.name, lastTweet.username, timeString)
+    
     tweet_lines.append(tweetHeader)
     tweet_lines_colour.append(tweetHeader)
     
