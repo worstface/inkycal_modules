@@ -140,7 +140,7 @@ class Tweets(inkycal_module):
         timeString = '{}m'.format(int((deltaSeconds%3600) // 60))
     elif (timeDelta < timedelta(hours = 24)):
         timeString = '{}h'.format(int(deltaSeconds//3600))
-    elif (timeDelta < timedelta(years = 1)):
+    elif (timeDelta < timedelta(hours = 8760)):
         timeString = createdAt.strftime("%b %d")
     else: timeString = createdAt.strftime("%b %d %Y")
         
@@ -191,14 +191,14 @@ class Tweets(inkycal_module):
     footerVPos = (len(tweetLines)+1) * line_height + footerOffset
     logger.info(f'footer vertical offset: {footerVPos}')
     
-    ImageDraw.Draw(textSpace).text((100, (footerVPos+2)), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((130, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((110, (footerVPos+2)), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((140, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
-    ImageDraw.Draw(textSpace).text((200, (footerVPos)), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((230, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((210, (footerVPos)), '\ue86a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((240, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
     
-    ImageDraw.Draw(textSpace).text((300, (footerVPos)), '\ue87e', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((330, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((310, (footerVPos)), '\ue87e', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((340, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
