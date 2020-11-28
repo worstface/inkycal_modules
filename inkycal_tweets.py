@@ -153,7 +153,14 @@ class Tweets(inkycal_module):
     
     logger.info(f'preparing tweet text...')
             
-    splitTweetText = lastTweet.tweet.split()
+    tweetText = lastTweet.tweet
+
+    shortUrlIndex = tweetText.find("https://t.co/")
+    if (shortUrlIndex >= 0):
+        tweetText = tweetText[0:shortUrlIndex]  
+        logger.info(f'removed obsolete shorturl...')
+    
+    splitTweetText = tweetText.split()
     
     tweetLine = ""
     qrcodeWidth = 72
