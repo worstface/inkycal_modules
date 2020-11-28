@@ -128,23 +128,22 @@ class Tweets(inkycal_module):
     tweet_lines_colour.append(tweetHeader)
     
     logger.info(f'preparing tweet text...')
-    tweetText = lastTweet.tweet
-    
-    tweetTextSize = self.font.getsize(tweetText)
-    logger.info(f'tweet text size: {tweetTextSize}')
-        
-    splitText = tweetText.split()
+            
+    splitTweetText = lastTweet.tweet.split()
     
     tweetLine = ""
     qrcodeWidth = 60
+    
     tweetLines= []
-    for word in splitText:
+    for word in splitTweetText:
         tweetSizeX, tweetSizeY = self.font.getsize(tweetLine +" "+ word)
         if (tweetSizeX > line_width - qrcodeWidth and len(tweetLines) < 2) or (tweetSizeX > line_width):
             tweetLines.append(tweetLine)
             tweetLine = word
-        else:
+        elif tweetLine:
             tweetLine = tweetLine +" "+ word
+        else:
+            tweetLine = word
             
     if tweetLine:
         tweetLines.append(tweetLine)
