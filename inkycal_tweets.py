@@ -161,7 +161,7 @@ class Tweets(inkycal_module):
     footerVPos = (len(tweetLines)+1) * line_height + footerOffset
     logger.info(f'footer vertical offset: {footerVPos}')
     
-    ImageDraw.Draw(textSpace).text((100, (footerVPos)), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((100, (footerVPos+2)), '\ue0cb', fill='black', font=materialFont)
     ImageDraw.Draw(textSpace).text((128, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
     ImageDraw.Draw(textSpace).text((200, (footerVPos)), '\ue86a', fill='black', font=materialFont)
