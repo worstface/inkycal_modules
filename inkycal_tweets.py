@@ -156,7 +156,7 @@ class Tweets(inkycal_module):
     splitTweetText = lastTweet.tweet.split()
     
     tweetLine = ""
-    qrcodeWidth = 60
+    qrcodeWidth = 72
     
     tweetLines= []
     for word in splitTweetText:
@@ -185,13 +185,13 @@ class Tweets(inkycal_module):
     logger.info(f'footer vertical offset: {footerVPos}')
     
     ImageDraw.Draw(textSpace).text((100, (footerVPos+2)), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((128, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((130, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
     ImageDraw.Draw(textSpace).text((200, (footerVPos)), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((228, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((230, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
     
-    ImageDraw.Draw(textSpace).text((300, (footerVPos)), '\ue83a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((328, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((300, (footerVPos)), '\ue87e', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((330, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
