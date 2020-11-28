@@ -157,7 +157,7 @@ class Tweets(inkycal_module):
 
     shortUrlIndex = tweetText.find("https://t.co/")
     if (shortUrlIndex >= 0):
-        tweetText = tweetText[0:shortUrlIndex]  
+        tweetText = tweetText[0:shortUrlIndex]+" [URL]"
         logger.info(f'removed obsolete shorturl...')
     
     splitTweetText = tweetText.split()
