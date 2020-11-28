@@ -26,6 +26,8 @@ This is WIP.
 The current git state of Twint is needed for this module (the current package doesn't work):  
 'pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint'
 
+Recommended settings: fontSize = 16, moduleHeight >= 200
+
 # Installation instructions
 
 1) Navigate to the modules directory
