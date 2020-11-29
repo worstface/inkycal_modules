@@ -11,8 +11,8 @@ It depends on [yfinance](https://github.com/ranaroussi/yfinance) which uses the 
 
 You can display any information by using the respective symbols that are used by [Yahoo! Finance](https://finance.yahoo.com/).
 
-It's easily setup with a list of symbols like this e.g.: 
-`tickers = ["TSLA", "AMD", "NVDA", "^DJI", "BTC-USD", "EURUSD=X"]`
+It's easily setup with a string of comma separated symbols like this e.g.: 
+`tickers = "TSLA, AMD, NVDA, ^DJI, BTC-USD, EURUSD=X"`
 
 # Inkycal Tweets Module
 <p align="center">
