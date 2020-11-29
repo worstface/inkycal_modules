@@ -27,7 +27,7 @@ Below the tweet a footer is drawn, which shows the number of comments, retweets 
 Needs Twint >v2.1.21
 
 The current git dev state of Twint is needed for this module (the current pip package doesn't work):  
-'pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint'
+`pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint`
 
 Recommended settings: moduleHeight >= 1/4 display
 
