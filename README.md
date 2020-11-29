@@ -24,7 +24,7 @@ It shows the chronologically last tweet defined by a filter which can contain a 
 The tweet is displayed whith a header, which contains the name, username and timestamp. It contains the text including a QR-code with a link to the tweet. 
 Below the tweet a footer is drawn, which shows the number of comments, retweets and likes.
 
-Needs Twint >v2.1.21
+Needs qrcode and Twint >v2.1.21
 
 The current git dev state of Twint is needed for this module (the current pip package doesn't work):  
 `pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint`
