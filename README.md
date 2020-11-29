@@ -19,9 +19,10 @@ It's easily setup with a list of symbols like this e.g.:
             <img src="https://raw.githubusercontent.com/worstface/inkycal_stocks/master/Gallery/inkycal_tweets.jpg" width="800">
 </p>
 
-The tweets-module displays tweets from twitter by using the [Twint library](https://github.com/twintproject/twint).
-
-This is WIP.
+The tweets-module displays a tweet from twitter by using the [Twint library](https://github.com/twintproject/twint).
+It shows the chronologically last tweet defined by a filter which can contain a username, a search term, a location and a minimum of likes.
+The tweet is displayed whith a header, which contains the name, username and timestamp. It contains the text including a QR-code with a link to the tweet. 
+Below the tweet a footer is drawn, which shows the number of comments, retweets and likes.
 
 The current git state of Twint is needed for this module (the current package doesn't work):  
 'pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint'
