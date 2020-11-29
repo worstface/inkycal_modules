@@ -163,12 +163,37 @@ class Tweets(inkycal_module):
     splitTweetText = tweetText.split()
     
     tweetLine = ""
-    qrcodeWidth = 72
+       
+    logger.info(f'generating qr code...')
+    boxSize = 2
+    borderSize = 4
+    if (im_width<=384):
+        boxSize = 1
+        borderSize = 2
+        
+    logger.info(f'qr code boxSize: {boxSize}')
+    logger.info(f'qr code borderSize: {borderSize}')
+    
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=boxSize,
+        border=borderSize)
+        
+    qr.add_data(lastTweet.link)
+    
+    qrcodeWidthOffset = int(im_width//30)
+    qrImage = qr.make_image(fill_color="black", back_color="white")
+    qrImageWidth = qrImage.width
+    qrSpace = Image.new('RGBA', (im_width, 100), (255,255,255,255))
+    qrSpace.paste(qrImage,(im_width-(qrImageWidth+qrcodeWidthOffset),0))
+    logger.info(f'qr code imageWidth: {qrImageWidth}')
+    logger.info(f'qr code qrcodeWidthOffset: {qrcodeWidthOffset}')
     
     tweetLines= []
     for word in splitTweetText:
         tweetSizeX, tweetSizeY = self.font.getsize(tweetLine +" "+ word)
-        if (tweetSizeX > line_width - qrcodeWidth and len(tweetLines) < 2) or (tweetSizeX > line_width):
+        if (tweetSizeX > line_width - (qrImageWidth+2*qrcodeWidthOffset) and len(tweetLines) < 2) or (tweetSizeX > line_width):
             tweetLines.append(tweetLine)
             tweetLine = word
         elif tweetLine:
@@ -184,37 +209,33 @@ class Tweets(inkycal_module):
         tweet_lines.append(tweetLineText)        
     
     logger.info(f'preparing tweet footer...')
-    textSpace = Image.new('RGBA', (528, 400), (255,255,255,255))
-    materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = 24)       
+    textSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
+    materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = self.font.size)       
     
-    footerOffset = 8
-    footerVPos = (len(tweetLines)+1) * line_height + footerOffset
-    logger.info(f'footer vertical offset: {footerVPos}')
+    footerOffset = int(line_height//2)
+    footerVPos = (len(tweetLines)+1) * line_height + footerOffset    
+    footerIconHDist = int(im_width//5)
+    footerIconHOffset = int(im_width//18)
+    footerIconVOffset = int(line_height//8)
     
-    ImageDraw.Draw(textSpace).text((110, (footerVPos+2)), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((140, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
+    logger.info(f'footer footerOffset: {footerOffset}') 
+    logger.info(f'footer footerVPos: {footerVPos}')    
+    logger.info(f'footer footerIconHDist: {footerIconHDist}')
+    logger.info(f'footer footerIconHOffset: {footerIconHOffset}')    
+    logger.info(f'footer footerIconVOffset: {footerIconVOffset}')
+    
+    ImageDraw.Draw(textSpace).text((footerIconHDist, (footerVPos+footerIconVOffset)), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist+footerIconHOffset, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
-    ImageDraw.Draw(textSpace).text((210, (footerVPos)), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((240, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*2, (footerVPos+footerIconVOffset)), '\ue86a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*2+footerIconHOffset, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
     
-    ImageDraw.Draw(textSpace).text((310, (footerVPos)), '\ue87e', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((340, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((footerIconHDist*3, (footerVPos+footerIconVOffset)), '\ue87e', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*3+footerIconHOffset, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
     
-    logger.info(f'generating qr code...')
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=2,
-        border=4)
-        
-    qr.add_data(lastTweet.link)
-    
-    qrImage = qr.make_image(fill_color="black", back_color="white")
-    qrSpace = Image.new('RGBA', (528, 100), (255,255,255,255))
-    qrSpace.paste(qrImage,(430,0))
     im_black.paste(qrSpace)
 
     # Write/Draw something on the black image   
