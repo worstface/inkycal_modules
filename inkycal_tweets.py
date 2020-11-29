@@ -212,7 +212,7 @@ class Tweets(inkycal_module):
     textSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
     materialFont = ImageFont.truetype(fonts['MaterialIcons-Regular'], size = self.font.size)       
     
-    footerOffset = int(line_height//2)
+    footerOffset = int(line_height//3)
     footerVPos = (len(tweetLines)+1) * line_height + footerOffset    
     footerIconHDist = int(im_width//5)
     footerIconHOffset = int(im_width//18)
