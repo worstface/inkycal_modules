@@ -216,7 +216,7 @@ class Tweets(inkycal_module):
     footerVPos = (len(tweetLines)+1) * line_height + footerOffset    
     footerIconHDist = int(im_width//5)
     footerIconHOffset = int(im_width//18)
-    footerIconVOffset = int(line_height//8)
+    footerIconVOffset = int(line_height//6)
     
     logger.info(f'footer footerOffset: {footerOffset}') 
     logger.info(f'footer footerVPos: {footerVPos}')    
@@ -224,14 +224,14 @@ class Tweets(inkycal_module):
     logger.info(f'footer footerIconHOffset: {footerIconHOffset}')    
     logger.info(f'footer footerIconVOffset: {footerIconVOffset}')
     
-    ImageDraw.Draw(textSpace).text((footerIconHDist, (footerVPos+footerIconVOffset)), '\ue0cb', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((footerIconHDist+footerIconHOffset, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((footerIconHDist, (footerVPos + footerIconVOffset + int(footerIconVOffset//3))), '\ue0cb', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist + footerIconHOffset, (footerVPos)), human_format(lastTweet.replies_count), fill='black', font=self.font)
         
-    ImageDraw.Draw(textSpace).text((footerIconHDist*2, (footerVPos+footerIconVOffset)), '\ue86a', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((footerIconHDist*2+footerIconHOffset, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*2, (footerVPos + footerIconVOffset)), '\ue86a', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*2 + footerIconHOffset, (footerVPos)), human_format(lastTweet.retweets_count), fill='black', font=self.font)
     
-    ImageDraw.Draw(textSpace).text((footerIconHDist*3, (footerVPos+footerIconVOffset)), '\ue87e', fill='black', font=materialFont)
-    ImageDraw.Draw(textSpace).text((footerIconHDist*3+footerIconHOffset, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
+    ImageDraw.Draw(textSpace).text((footerIconHDist*3, (footerVPos + footerIconVOffset)), '\ue87e', fill='black', font=materialFont)
+    ImageDraw.Draw(textSpace).text((footerIconHDist*3 + footerIconHOffset, (footerVPos)), human_format(lastTweet.likes_count), fill='black', font=self.font) 
 
     im_black.paste(textSpace)
     im_colour.paste(textSpace)    
