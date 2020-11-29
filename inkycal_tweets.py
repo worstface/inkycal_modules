@@ -184,7 +184,7 @@ class Tweets(inkycal_module):
     
     qrcodeWidthOffset = int(im_width//30)
     qrImage = qr.make_image(fill_color="black", back_color="white")
-    qrImageWidth = qrImage.width
+    qrImageWidth = qrImage.width * boxSize
     qrSpace = Image.new('RGBA', (im_width, 100), (255,255,255,255))
     qrSpace.paste(qrImage,(im_width-(qrImageWidth+qrcodeWidthOffset),0))
     logger.info(f'qr code imageWidth: {qrImageWidth}')
