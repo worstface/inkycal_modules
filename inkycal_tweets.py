@@ -142,7 +142,7 @@ class Tweets(inkycal_module):
         timeString = '{}h'.format(int(deltaSeconds//3600))
     elif (timeDelta < timedelta(hours = 8760)):
         timeString = createdAt.strftime("%b %d")
-    else: timeString = createdAt.strftime("%b %d %Y")
+    else: timeString = createdAt.strftime("%b %d, %Y")
         
     logger.info(f'timeString: {timeString}')
     
