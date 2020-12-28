@@ -96,14 +96,28 @@ class Stocks(inkycal_module):
       logger.info(f'preparing data for {ticker}...')
 
       yfTicker = yf.Ticker(ticker)
-
+      
       try:
         stockInfo = yfTicker.info
+      except Exception:
+        logger.warning(f"Failed to get '{ticker}' ticker info!")
+
+      try:        
         stockName = stockInfo['shortName']
       except Exception:
         stockName = ticker
-        logger.warning(f"Failed to get '{stockName}' ticker info! Using "
+        logger.warning(f"Failed to get '{stockName}' ticker name! Using "
                        "the ticker symbol as name instead.")
+                       
+      try:        
+        stockCurrency = stockInfo['currency']        
+        if stockCurrency == 'USD':
+            stockCurrency = '$'
+        elif stockCurrency == 'EUR':
+            stockCurrency = '€'
+      except Exception:
+        stockCurrency = ''
+        logger.warning(f"Failed to get ticker currency!")
 
       stockHistory = yfTicker.history("2d")
       previousQuote = (stockHistory.tail(2)['Close'].iloc[0])
@@ -111,8 +125,8 @@ class Stocks(inkycal_module):
       currentGain = currentQuote-previousQuote
       currentGainPercentage = (1-currentQuote/previousQuote)*-100
 
-      tickerLine = '{}: {:.2f} {:+.2f} ({:+.2f}%)'.format(
-        stockName, currentQuote, currentGain, currentGainPercentage)
+      tickerLine = '{}: {:.2f}{} {:+.2f} ({:+.2f}%)'.format(
+        stockName, currentQuote, stockCurrency, currentGain, currentGainPercentage)
 
       logger.info(tickerLine)
       parsed_tickers.append(tickerLine)
