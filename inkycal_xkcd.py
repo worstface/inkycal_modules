@@ -45,7 +45,6 @@ class Xkcd(inkycal_module):
     config = config['config']
    
     self.mode = config['mode']
-    self.mode = 'latest'
 
     # give an OK message
     print(f'{filename} loaded')
@@ -86,37 +85,33 @@ class Xkcd(inkycal_module):
     logger.debug(f'line positions: {line_positions}')
       
     logger.info(f'getting xkcd comic...')
-    xkcdComic = xkcd.getLatestComic() 
+    
+    if self.mode == 'latest':
+        xkcdComic = xkcd.getLatestComic()
+    elif self.mode == 'random':
+        xkcdComic = xkcd.getRandomComic()
+    
     xkcdComic.download(output='.', outputFile='xkcdComic.png')
 
     logger.info(f'got xkcd comic...')
-   
-    logger.info(f'preparing tweet image...')
-    tweet_lines = []
-    tweet_lines_colour = []    
-         
+    title_lines = []
+    title_lines.append(xkcdComic.getTitle())
+    
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    comicImage = Image.open('xkcdComic.png')
-    comicSpace.paste(comicImage,(0,0))
-    logger.info(f'added comic image')   
+    comicImage = Image.open('xkcdComic.png')    
+    comicSpace.paste(comicImage,(int((im_width/2)-(comicImage.width/2)), line_height*2))
+    logger.info(f'added comic image')
     
     im_black.paste(comicSpace)
 
     # Write/Draw something on the black image   
-    for _ in range(len(tweet_lines)):
+    for _ in range(len(title_lines)):
       if _+1 > max_lines:
-        logger.error('Ran out of lines for tweet_lines_black')
+        logger.error('Ran out of lines for title_lines_black')
         break
       write(im_black, line_positions[_], (line_width, line_height),
-              tweet_lines[_], font = self.font, alignment= 'left')    
-
-    # Write/Draw something on the colour image
-    for _ in range(len(tweet_lines_colour)):
-      if _+1 > max_lines:
-        logger.error('Ran out of lines for tweet_lines_colour')
-        break
-      write(im_colour, line_positions[_], (line_width, line_height),
-              tweet_lines_colour[_], font = self.font, alignment= 'left')    
+              title_lines[_], font = self.font, alignment= 'center')
+        
 
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
