@@ -114,7 +114,7 @@ class Tweets(inkycal_module):
     twintConfig.Store_object = True
     twintConfig.Hide_output = True
 
-
+    logger.info(f'clearing tweets list...')
     twint.output.tweets_list = []
     logger.info(f'running twint search...')
     twint.run.Search(twintConfig)
