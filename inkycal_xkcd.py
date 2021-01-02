@@ -99,7 +99,10 @@ class Xkcd(inkycal_module):
     
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
     comicImage = Image.open('xkcdComic.png')    
-    comicSpace.paste(comicImage,(int((im_width/2)-(comicImage.width/2)), line_height*2))
+    headerHeight = int(line_height*3/2)
+    comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
+    centerPos = int((im_width/2)-(comicImage.width/2))
+    comicSpace.paste(comicImage, (centerPos, headerHeight))
     logger.info(f'added comic image')
     
     im_black.paste(comicSpace)
