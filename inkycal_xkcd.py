@@ -16,12 +16,6 @@ try:
 except ImportError:
   print('xkcd is not installed! Please install with:')
   print('pip3 install xkcd')
-  
-try:
-  import qrcode
-except ImportError:
-  print('qrcode is not installed! Please install with:')
-  print('pip3 install qrcode[pil]')
 
 filename = os.path.basename(__file__).split('.py')[0]
 logger = logging.getLogger(filename)
@@ -91,14 +85,14 @@ class Xkcd(inkycal_module):
     elif self.mode == 'random':
         xkcdComic = xkcd.getRandomComic()
     
-    xkcdComic.download(output='.', outputFile='xkcdComic.png')
+    xkcdComic.download(output='/home/pi/Inkycal', outputFile='xkcdComic.png')
 
     logger.info(f'got xkcd comic...')
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
     
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    comicImage = Image.open('xkcdComic.png')    
+    comicImage = Image.open('/home/pi/Inkycal/xkcdComic.png')    
     headerHeight = int(line_height*3/2)
     comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
     centerPos = int((im_width/2)-(comicImage.width/2))
