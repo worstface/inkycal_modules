@@ -18,10 +18,10 @@ except ImportError:
   print('pip3 install twint')
   
 try:
-  import qrcode
+  import segno
 except ImportError:
-  print('qrcode is not installed! Please install with:')
-  print('pip3 install qrcode[pil]')
+  print('segno is not installed! Please install with:')
+  print('pip3 install segno')
 
 filename = os.path.basename(__file__).split('.py')[0]
 logger = logging.getLogger(filename)
@@ -30,17 +30,17 @@ class Tweets(inkycal_module):
 
   name = "Tweets - Displays Twitter tweets"
 
-  # required parameters
+  # optional parameters
   optional = {
 
     "username": {
-        "label": "username to show tweets of "               
+        "label": "Username to show tweets of. (can be combined with 'search')"               
         },
     "search": {
-        "label": "search term to show tweets of "               
+        "label": "Search term to show tweets of. (can be combined with 'username')"               
         },
     "minlikes": {
-        "label": "You can display any information by using "               
+        "label": "Minimum likes the tweet needs to have."               
         }              
     }
 
@@ -162,40 +162,28 @@ class Tweets(inkycal_module):
         tweetText = tweetText[0:shortUrlIndex]+" [URL]"
         logger.info(f'removed obsolete shorturl...')
     
-    splitTweetText = tweetText.split()
+    splitTweetText = tweetText.split()    
+    tweetLine = ""    
     
-    tweetLine = ""
-       
     logger.info(f'generating qr code...')
-    boxSize = 2
-    borderSize = 4
-    if (im_width<=384):
-        boxSize = 1
-        borderSize = 2
-        
-    logger.info(f'qr code boxSize: {boxSize}')
-    logger.info(f'qr code borderSize: {borderSize}')
-    
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=boxSize,
-        border=borderSize)
-        
-    qr.add_data(lastTweet.link)
-    
-    qrcodeWidthOffset = int(im_width//30)
-    qrImage = qr.make_image(fill_color="black", back_color="white")
-    qrImageWidth = qrImage.width * boxSize
-    qrSpace = Image.new('RGBA', (im_width, 100), (255,255,255,255))
-    qrSpace.paste(qrImage,(im_width-(qrImageWidth+qrcodeWidthOffset),0))
+    qrcode = segno.make(lastTweet.link)    
+    imageOffset = int(im_width//30)
+    qrImage = qrcode.to_pil(scale=2)
+    qrImageWidth = qrImage.width
+    logoImage = Image.open('/home/pi/Inkycal/inkycal/modules/inkycal_tweets/Twitter_Logo_BlackOnWhite.png')
+    logoSize = int(im_width//16)
+    logoImage.thumbnail((logoSize,logoSize), Image.BICUBIC)
+    logger.info(f'added logo imageWidth: {logoSize}')
+    qrSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
+    qrSpace.paste(logoImage,(im_width-(logoSize+imageOffset),0))
+    qrSpace.paste(qrImage,(im_width-(qrImageWidth+imageOffset),logoSize))
     logger.info(f'qr code imageWidth: {qrImageWidth}')
-    logger.info(f'qr code qrcodeWidthOffset: {qrcodeWidthOffset}')
+    logger.info(f'qr code qrcodeWidthOffset: {imageOffset}')
     
     tweetLines= []
     for word in splitTweetText:
         tweetSizeX, tweetSizeY = self.font.getsize(tweetLine +" "+ word)
-        if (tweetSizeX > line_width - (qrImageWidth+2*qrcodeWidthOffset) and len(tweetLines) < 2) or (tweetSizeX > line_width):
+        if (tweetSizeX > line_width - (qrImageWidth+2*imageOffset) and len(tweetLines) < 4) or (tweetSizeX > line_width):
             tweetLines.append(tweetLine)
             tweetLine = word
         elif tweetLine:
