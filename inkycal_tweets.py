@@ -183,7 +183,7 @@ class Tweets(inkycal_module):
     tweetLines= []
     for word in splitTweetText:
         tweetSizeX, tweetSizeY = self.font.getsize(tweetLine +" "+ word)
-        if (tweetSizeX > line_width - (qrImageWidth+2*imageOffset) and len(tweetLines) < 4) or (tweetSizeX > line_width):
+        if (tweetSizeX > line_width - (qrImageWidth+2*imageOffset) and len(tweetLines) < 3) or (tweetSizeX > line_width):
             tweetLines.append(tweetLine)
             tweetLine = word
         elif tweetLine:
