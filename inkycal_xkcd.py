@@ -10,6 +10,7 @@ from inkycal.custom import *
 from dateutil.parser import *
 from dateutil.tz import *
 from datetime import *
+import os
 
 try:
   import xkcd
@@ -45,6 +46,16 @@ class Xkcd(inkycal_module):
     
   def generate_image(self):
     """Generate image for this module"""   
+
+    # Create tmp path
+    tmpPath = '/tmp/inkycal_xkcd/'
+
+    try:
+        os.mkdir(tmpPath)
+    except OSError:
+        print ("Creation of tmp directory %s failed" % path)
+    else:
+        print ("Successfully created tmp directory %s " % path)
 
     # Define new image size with respect to padding
     im_width = int(self.width - (2 * self.padding_left))
@@ -82,17 +93,17 @@ class Xkcd(inkycal_module):
             
     if self.mode == 'random':
         xkcdComic = xkcd.getRandomComic()
-    else
+    else:
         xkcdComic = xkcd.getLatestComic()
     
-    xkcdComic.download(output='/home/pi/Inkycal', outputFile='xkcdComic.png')
+    xkcdComic.download(output=tmpPath, outputFile='xkcdComic.png')
 
     logger.info(f'got xkcd comic...')
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
     
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    comicImage = Image.open('/home/pi/Inkycal/xkcdComic.png')    
+    comicImage = Image.open(tmpPath+'/xkcdComic.png')    
     headerHeight = int(line_height*3/2)
     comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
     centerPos = int((im_width/2)-(comicImage.width/2))
