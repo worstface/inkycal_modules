@@ -28,7 +28,7 @@ class Xkcd(inkycal_module):
   requires = {
 
     "mode": {
-        "label": "mode "               
+        "label": "Modes: 'latest' or 'random' "               
         }          
     }
 
@@ -79,11 +79,11 @@ class Xkcd(inkycal_module):
     logger.debug(f'line positions: {line_positions}')
       
     logger.info(f'getting xkcd comic...')
-    
-    if self.mode == 'latest':
-        xkcdComic = xkcd.getLatestComic()
-    elif self.mode == 'random':
+            
+    if self.mode == 'random':
         xkcdComic = xkcd.getRandomComic()
+    else
+        xkcdComic = xkcd.getLatestComic()
     
     xkcdComic.download(output='/home/pi/Inkycal', outputFile='xkcdComic.png')
 
