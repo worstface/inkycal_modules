@@ -179,10 +179,12 @@ class Stocks(inkycal_module):
 
       parsed_tickers_colour.append("")
       if currentGain < 0:        
-        parsed_tickers_colour.append(stockCurrentValueLine)  
-        parsed_tickers_colour.append(stockDayValueLine)         
+        parsed_tickers_colour.append(stockCurrentValueLine)
       else:
         parsed_tickers_colour.append("")
+      if currentOpen > currentQuote:        
+        parsed_tickers_colour.append(stockDayValueLine)        
+      else:
         parsed_tickers_colour.append("")
       if firstQuote > currentQuote:        
         parsed_tickers_colour.append(stockMonthValueLine)        
