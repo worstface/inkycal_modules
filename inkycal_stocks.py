@@ -157,8 +157,8 @@ class Stocks(inkycal_module):
       logger.info(f'firstQuote {firstQuote} ...')
 
       stockNameLine = stockName
-      stockCurrentValueLine = '{:.2f}{} {:+.2f} ({:+.2f}%)'.format(
-        currentQuote, stockCurrency, currentGain, currentGainPercentage)
+      stockCurrentValueLine = '{:.2f}{} {:+.2f}{} ({:+.2f}%)'.format(
+        currentQuote, stockCurrency, currentGain, stockCurrency, currentGainPercentage)
       stockDayValueLine = '1d op/hi/lo: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
         currentOpen, stockCurrency, currentHigh, stockCurrency, currentLow, stockCurrency)
       maxQuote = max(stockHistory.High)
