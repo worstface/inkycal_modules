@@ -12,7 +12,6 @@ by https://github.com/worstface
 """
 from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
-import numpy as np
 import os
 
 try:
@@ -113,8 +112,10 @@ class Stocks(inkycal_module):
     parsed_tickers_colour = []
     chartSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
     chartSpace_colour = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
+    
+    tickerCount = range(len(self.tickers)
 
-    for _ in range(len(self.tickers)):
+    for _ in tickerCount:
     
       ticker = self.tickers[_]
       logger.info(f'preparing data for {ticker}...')
@@ -174,8 +175,7 @@ class Stocks(inkycal_module):
       parsed_tickers.append(stockNameLine)
       parsed_tickers.append(stockCurrentValueLine)
       parsed_tickers.append(stockDayValueLine)
-      parsed_tickers.append(stockMonthValueLine)
-      parsed_tickers.append("")
+      parsed_tickers.append(stockMonthValueLine)      
 
       parsed_tickers_colour.append("")
       if currentGain < 0:        
@@ -190,7 +190,10 @@ class Stocks(inkycal_module):
         parsed_tickers_colour.append(stockMonthValueLine)        
       else:
         parsed_tickers_colour.append("")
-      parsed_tickers_colour.append("")
+        
+      if (_ < tickerCount):
+        parsed_tickers.append("")  
+        parsed_tickers_colour.append("")
         
       logger.info(f'creating chart data...')
       chartData = stockHistory.reset_index()
