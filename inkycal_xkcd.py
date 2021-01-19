@@ -23,13 +23,15 @@ logger = logging.getLogger(filename)
 
 class Xkcd(inkycal_module):
 
-  name = "xkcd - Displays xkcd comics"
+  name = "xkcd - Displays comics from xkcd.com by Randall Munroe"
 
   # required parameters
   requires = {
 
     "mode": {
-        "label": "Modes: 'latest' or 'random' "               
+        "label":"Please select the mode",
+        "options": ["latest", "random"],
+        "default": "latest"      
         }          
     }
 
