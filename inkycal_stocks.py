@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Stocks Module for Inky-Calendar Project
+Stocks Module for Inkycal Project
 
 Version 0.4: Added charts
 Version 0.3: Added support for web-UI of Inkycal 2.0.0
@@ -10,9 +10,13 @@ Version 0.1: Migration to Inkycal 2.0.0b
 
 by https://github.com/worstface
 """
-from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
 import os
+import logging
+
+from inkycal.modules.template import inkycal_module
+from inkycal.custom import write, internet_available
+
+from PIL import Image
 
 try:
   import yfinance as yf
@@ -21,14 +25,13 @@ except ImportError:
   print('pip3 install yfinance')
 
 try:
-  import matplotlib.pyplot as plt  
+  import matplotlib.pyplot as plt
   import matplotlib.image as mpimg
 except ImportError:
   print('matplotlib is not installed! Please install with:')
   print('pip3 install matplotlib')
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Stocks(inkycal_module):
 
@@ -60,7 +63,7 @@ class Stocks(inkycal_module):
       self.tickers = config['tickers']
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def generate_image(self):
     """Generate image for this module"""
@@ -69,21 +72,21 @@ class Stocks(inkycal_module):
     im_width = int(self.width - (2 * self.padding_left))
     im_height = int(self.height - (2 * self.padding_top))
     im_size = im_width, im_height
-    logger.info('image size: {} x {} px'.format(im_width, im_height))
+    logger.info(f'image size: {im_width} x {im_height} px')
 
     # Create an image for black pixels and one for coloured pixels (required)
     im_black = Image.new('RGB', size = im_size, color = 'white')
     im_colour = Image.new('RGB', size = im_size, color = 'white')
-    
+
     # Create tmp path
     tmpPath = '/tmp/inkycal_stocks/'
 
     try:
         os.mkdir(tmpPath)
     except OSError:
-        print ("Creation of tmp directory %s failed" % path)
+        print (f"Creation of tmp directory {tmpPath} failed")
     else:
-        print ("Successfully created tmp directory %s " % path)
+        print (f"Successfully created tmp directory {tmpPath} ")
 
     # Check if internet is available
     if internet_available() == True:
@@ -110,32 +113,31 @@ class Stocks(inkycal_module):
 
     parsed_tickers = []
     parsed_tickers_colour = []
-    chartSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    chartSpace_colour = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    
-    tickerCount = range(len(self.tickers)
+    chartSpace = Image.new('RGBA', (im_width, im_height), "white")
+    chartSpace_colour = Image.new('RGBA', (im_width, im_height), "white")
+
+    tickerCount = range(len(self.tickers))
 
     for _ in tickerCount:
-    
       ticker = self.tickers[_]
       logger.info(f'preparing data for {ticker}...')
-      
+
       yfTicker = yf.Ticker(ticker)
-      
+
       try:
         stockInfo = yfTicker.info
       except Exception:
         logger.warning(f"Failed to get '{ticker}' ticker info!")
 
-      try:        
+      try:
         stockName = stockInfo['shortName']
       except Exception:
         stockName = ticker
         logger.warning(f"Failed to get '{stockName}' ticker name! Using "
                        "the ticker symbol as name instead.")
-                       
-      try:        
-        stockCurrency = stockInfo['currency']        
+
+      try:
+        stockCurrency = stockInfo['currency']
         if stockCurrency == 'USD':
             stockCurrency = '$'
         elif stockCurrency == 'EUR':
@@ -175,31 +177,31 @@ class Stocks(inkycal_module):
       parsed_tickers.append(stockNameLine)
       parsed_tickers.append(stockCurrentValueLine)
       parsed_tickers.append(stockDayValueLine)
-      parsed_tickers.append(stockMonthValueLine)      
+      parsed_tickers.append(stockMonthValueLine)
 
       parsed_tickers_colour.append("")
-      if currentGain < 0:        
+      if currentGain < 0:
         parsed_tickers_colour.append(stockCurrentValueLine)
       else:
         parsed_tickers_colour.append("")
-      if currentOpen > currentQuote:        
-        parsed_tickers_colour.append(stockDayValueLine)        
+      if currentOpen > currentQuote:
+        parsed_tickers_colour.append(stockDayValueLine)
       else:
         parsed_tickers_colour.append("")
-      if firstQuote > currentQuote:        
-        parsed_tickers_colour.append(stockMonthValueLine)        
+      if firstQuote > currentQuote:
+        parsed_tickers_colour.append(stockMonthValueLine)
       else:
         parsed_tickers_colour.append("")
-        
-      if (_ < tickerCount):
-        parsed_tickers.append("")  
+
+      if (_ < len(tickerCount)):
+        parsed_tickers.append("")
         parsed_tickers_colour.append("")
-        
+
       logger.info(f'creating chart data...')
       chartData = stockHistory.reset_index()
       chartCloseData = chartData.loc[:,'Close']
       chartTimeData = chartData.loc[:,'Date']
-    
+
       logger.info(f'creating chart plot...')
       fig, ax = plt.subplots()  # Create a figure containing a single axes.
       ax.plot(chartTimeData, chartCloseData, linewidth=8)  # Plot some data on the axes.
@@ -208,24 +210,24 @@ class Stocks(inkycal_module):
       chartPath = tmpPath+ticker+'.png'
       logger.info(f'saving chart image to {chartPath}...')
       plt.savefig(chartPath)
-      
+
       logger.info(f'chartSpace is...{im_width} {im_height}')
       logger.info(f'open chart ...{chartPath}')
       chartImage = Image.open(chartPath)
       chartImage.thumbnail((im_width/4,line_height*4), Image.BICUBIC)
-      
+
       chartPasteX = im_width-(chartImage.width)
       chartPasteY = line_height*5*_
       logger.info(f'pasting chart image with index {_} to...{chartPasteX} {chartPasteY}')
-      
+
       if firstQuote > currentQuote:
         chartSpace_colour.paste(chartImage, (chartPasteX, chartPasteY))
       else:
-        chartSpace.paste(chartImage, (chartPasteX, chartPasteY))      
+        chartSpace.paste(chartImage, (chartPasteX, chartPasteY))
 
     im_black.paste(chartSpace)
     im_colour.paste(chartSpace_colour)
-    
+
     # Write/Draw something on the black image
     for _ in range(len(parsed_tickers)):
       if _+1 > max_lines:
@@ -241,9 +243,9 @@ class Stocks(inkycal_module):
         break
       write(im_colour, line_positions[_], (line_width, line_height),
               parsed_tickers_colour[_], font = self.font, alignment= 'left')
-    
+
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone/debug mode')
+  print('running module in standalone/debug mode')
