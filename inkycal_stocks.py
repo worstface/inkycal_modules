@@ -126,8 +126,8 @@ class Stocks(inkycal_module):
 
       try:
         stockInfo = yfTicker.info
-      except Exception:
-        logger.warning(f"Failed to get '{ticker}' ticker info!")
+      except Exception as exceptionMessage:
+        logger.warning(f"Failed to get '{ticker}' ticker info: {exceptionMessage}")
 
       try:
         stockName = stockInfo['shortName']
