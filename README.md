@@ -31,6 +31,11 @@ The current git dev state of Twint is needed for this module (the current pip pa
 
 Recommended settings: moduleHeight >= 1/4 display
 
+# Inkycal XKCD Module
+<p align="center">
+            <img src="https://raw.githubusercontent.com/worstface/inkycal_stocks/master/Gallery/inkycal_xkcd.jpg" width="800">
+</p>
+
 # Installation instructions
 
 1) Navigate to the modules directory
