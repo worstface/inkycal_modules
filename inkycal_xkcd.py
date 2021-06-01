@@ -33,9 +33,14 @@ class Xkcd(inkycal_module):
         "default": "latest"      
         },
     "alt": {
-        "label": "Would you like to add the alt text below the comic?",
+        "label": "Would you like to add the alt text below the comic? If XKCD is not the only module you are showing, I recommend setting this to 'no'",
         "options": ["yes", "no"],
-        "default": "yes"
+        "default": "no"
+        },
+    "filter": {
+        "label": "Would you like to add a scaling filter? If the is far too big to be shown in the space you've allotted for it, the module will try to find another image for you. This only applies in random mode. If XKCD is not the only module you are showing, I recommend setting this to 'no'.",
+        "options": ["yes", "no"],
+        "default": "no"
         }
     }
 
@@ -47,6 +52,7 @@ class Xkcd(inkycal_module):
    
     self.mode = config['mode']
     self.alt = config['alt']
+    self.scale_filter = config['filter']
 
     # give an OK message
     print(f'{filename} loaded')
@@ -97,13 +103,24 @@ class Xkcd(inkycal_module):
     logger.debug(f'line positions: {line_positions}')
       
     logger.info(f'getting xkcd comic...')
-            
+    
     if self.mode == 'random':
-        xkcdComic = xkcd.getRandomComic()
+        if self.scale_filter == 'no':
+            xkcdComic = xkcd.getRandomComic()
+        else:
+            perc = (2.1,0.4)
+            url = "test variable, not a real comic"
+            while max(perc) > 1.75:
+                print("looking for another comic, old comic was: ",perc, url)
+                xkcdComic = xkcd.getRandomComic()
+                xkcdComic.download(output=tmpPath, outputFile='xkcdComic.png')
+                actual_size = Image.open(tmpPath+'/xkcdComic.png').size
+                perc = (actual_size[0]/im_width,actual_size[1]/im_height)
+                url = xkcdComic.getImageLink()
+            print("found one! perc: ",perc, url)
     else:
         xkcdComic = xkcd.getLatestComic()
-    
-    xkcdComic.download(output=tmpPath, outputFile='xkcdComic.png')
+        xkcdComic.download(output=tmpPath, outputFile='xkcdComic.png')
 
     logger.info(f'got xkcd comic...')
     title_lines = []
