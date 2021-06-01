@@ -103,6 +103,7 @@ class Xkcd(inkycal_module):
     logger.info(f'got xkcd comic...')
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
+    alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
     
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
     comicImage = Image.open(tmpPath+'/xkcdComic.png')    
@@ -114,7 +115,7 @@ class Xkcd(inkycal_module):
     
     im_black.paste(comicSpace)
 
-    # Write/Draw something on the black image   
+    # Write the title on the black image 
     for _ in range(len(title_lines)):
       if _+1 > max_lines:
         logger.error('Ran out of lines for title_lines_black')
@@ -122,6 +123,29 @@ class Xkcd(inkycal_module):
       write(im_black, line_positions[_], (line_width, line_height),
               title_lines[_], font = self.font, alignment= 'center')
         
+    # break up the alt text into lines
+    alt_lines = []
+    current_line = ""
+    for _ in alt_text.split(" "):
+        # this breaks up the alt_text into words and creates each line by adding
+        # one word at a time until the line is longer than the width of the module
+        # then it appends the line to the alt_lines array and starts testing a new line
+        if self.font.getsize(current_line + _ + " ")[0] < im_width:
+            current_line = current_line + _ + " "
+        else:
+            alt_lines.append(current_line)
+            current_line = _ + " "
+    alt_lines.append(current_line) # this adds the last line to the array (or the only line, if the alt text is really short)
+    
+    # find the next line_position that's underneath the comic so we know where to start the alt_lines
+    i = 0
+    while line_positions[i][1] < comicImage.height+headerHeight:
+        i = i + 1
+    
+    # write alt_text
+    for _ in range(len(alt_lines)):
+      write(im_black, line_positions[i+_], (line_width, line_height),
+                alt_lines[_], font = self.font, alignment='center')
 
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
