@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 xkcd Module for Inky-Calendar Project
-
 by https://github.com/worstface
 """
 from inkycal.modules.template import inkycal_module
@@ -32,7 +31,12 @@ class Xkcd(inkycal_module):
         "label":"Please select the mode",
         "options": ["latest", "random"],
         "default": "latest"      
-        }          
+        },
+    "alt": {
+        "label": "Would you like to add the alt text below the comic?",
+        "options": ["yes", "no"],
+        "default": "yes"
+        }
     }
 
   def __init__(self, config):
@@ -42,6 +46,7 @@ class Xkcd(inkycal_module):
     config = config['config']
    
     self.mode = config['mode']
+    self.alt = config['alt']
 
     # give an OK message
     print(f'{filename} loaded')
@@ -103,49 +108,51 @@ class Xkcd(inkycal_module):
     logger.info(f'got xkcd comic...')
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
-    alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
     
+    if self.alt == "yes":
+        alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
+   
+        # break up the alt text into lines
+        alt_lines = []
+        current_line = ""
+        for _ in alt_text.split(" "):
+            # this breaks up the alt_text into words and creates each line by adding
+            # one word at a time until the line is longer than the width of the module
+            # then it appends the line to the alt_lines array and starts testing a new line
+            if self.font.getsize(current_line + _ + " ")[0] < im_width:
+                current_line = current_line + _ + " "
+            else:
+                alt_lines.append(current_line)
+                current_line = _ + " "
+        alt_lines.append(current_line) # this adds the last line to the array (or the only line, if the alt text is really short)
+        altHeight = int(line_height*len(alt_lines))
+    else:
+        altHeight = 0 # this is added so that I don't need to add more "if alt is yes" conditionals when centering below. Now the centering code will work regardless of whether they want alttext or not
+        
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
     comicImage = Image.open(tmpPath+'/xkcdComic.png')    
     headerHeight = int(line_height*3/2)
+
     comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
-    centerPos = int((im_width/2)-(comicImage.width/2))
-    comicSpace.paste(comicImage, (centerPos, headerHeight))
+    centerPosX = int((im_width/2)-(comicImage.width/2))
+
+    headerCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2))
+    comicCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight)
+    altCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight+comicImage.height)
+
+    comicSpace.paste(comicImage, (centerPosX, comicCenterPosY))
     logger.info(f'added comic image')
     
     im_black.paste(comicSpace)
-
     # Write the title on the black image 
-    for _ in range(len(title_lines)):
-      if _+1 > max_lines:
-        logger.error('Ran out of lines for title_lines_black')
-        break
-      write(im_black, line_positions[_], (line_width, line_height),
-              title_lines[_], font = self.font, alignment= 'center')
-        
-    # break up the alt text into lines
-    alt_lines = []
-    current_line = ""
-    for _ in alt_text.split(" "):
-        # this breaks up the alt_text into words and creates each line by adding
-        # one word at a time until the line is longer than the width of the module
-        # then it appends the line to the alt_lines array and starts testing a new line
-        if self.font.getsize(current_line + _ + " ")[0] < im_width:
-            current_line = current_line + _ + " "
-        else:
-            alt_lines.append(current_line)
-            current_line = _ + " "
-    alt_lines.append(current_line) # this adds the last line to the array (or the only line, if the alt text is really short)
+    write(im_black, (0, headerCenterPosY), (line_width, line_height),
+              title_lines[0], font = self.font, alignment= 'center')
     
-    # find the next line_position that's underneath the comic so we know where to start the alt_lines
-    i = 0
-    while line_positions[i][1] < comicImage.height+headerHeight:
-        i = i + 1
-    
-    # write alt_text
-    for _ in range(len(alt_lines)):
-      write(im_black, line_positions[i+_], (line_width, line_height),
-                alt_lines[_], font = self.font, alignment='center')
+    if self.alt == "yes":
+        # write alt_text
+        for _ in range(len(alt_lines)):
+          write(im_black, (0, altCenterPosY+_*line_height), (line_width, line_height),
+                    alt_lines[_], font = self.font, alignment='center')
 
     # Save image of black and colour channel in image-folder
     return im_black, im_colour
