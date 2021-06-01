@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 xkcd Module for Inky-Calendar Project
-
 by https://github.com/worstface
 """
 from inkycal.modules.template import inkycal_module
@@ -104,25 +103,7 @@ class Xkcd(inkycal_module):
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
     alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
-    
-    comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    comicImage = Image.open(tmpPath+'/xkcdComic.png')    
-    headerHeight = int(line_height*3/2)
-    comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
-    centerPos = int((im_width/2)-(comicImage.width/2))
-    comicSpace.paste(comicImage, (centerPos, headerHeight))
-    logger.info(f'added comic image')
-    
-    im_black.paste(comicSpace)
-
-    # Write the title on the black image 
-    for _ in range(len(title_lines)):
-      if _+1 > max_lines:
-        logger.error('Ran out of lines for title_lines_black')
-        break
-      write(im_black, line_positions[_], (line_width, line_height),
-              title_lines[_], font = self.font, alignment= 'center')
-        
+   
     # break up the alt text into lines
     alt_lines = []
     current_line = ""
@@ -137,14 +118,29 @@ class Xkcd(inkycal_module):
             current_line = _ + " "
     alt_lines.append(current_line) # this adds the last line to the array (or the only line, if the alt text is really short)
     
-    # find the next line_position that's underneath the comic so we know where to start the alt_lines
-    i = 0
-    while line_positions[i][1] < comicImage.height+headerHeight:
-        i = i + 1
+    comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
+    comicImage = Image.open(tmpPath+'/xkcdComic.png')    
+    headerHeight = int(line_height*3/2)
+    altHeight = int(line_height*len(alt_lines))
+    comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
+    
+    centerPosX = int((im_width/2)-(comicImage.width/2))
+    headerCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2))
+    comicCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight)
+    altCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight+comicImage.height)
+
+    comicSpace.paste(comicImage, (centerPosX, comicCenterPosY))
+    logger.info(f'added comic image')
+    
+    im_black.paste(comicSpace)
+    # Write the title on the black image 
+    write(im_black, (0, headerCenterPosY), (line_width, line_height),
+              title_lines[0], font = self.font, alignment= 'center')
+    
     
     # write alt_text
     for _ in range(len(alt_lines)):
-      write(im_black, line_positions[i+_], (line_width, line_height),
+      write(im_black, (0, altCenterPosY+_*line_height), (line_width, line_height),
                 alt_lines[_], font = self.font, alignment='center')
 
     # Save image of black and colour channel in image-folder
