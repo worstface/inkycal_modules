@@ -152,7 +152,7 @@ class Xkcd(inkycal_module):
     comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))  
       
     im = Images()
-    im.load(tmpPath+'movies.jpg')
+    im.load(tmpPath+'xkcdComic.png')
     im.remove_alpha()
     imageScale = 4/5
     im.resize( width=int(im_width*imageScale), height=int(im_height*imageScale) )
