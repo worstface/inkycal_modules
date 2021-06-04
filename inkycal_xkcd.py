@@ -34,11 +34,15 @@ class Xkcd(inkycal_module):
         "options": ["latest", "random"],
         "default": "latest"      
         },
+    "palette": {
+        "label":"Which palette should be used for converting images?",
+        "options": ["bw", "bwr", "bwy"]
+        },
     "alt": {
         "label": "Would you like to add the alt text below the comic? If XKCD is not the only module you are showing, I recommend setting this to 'no'",
         "options": ["yes", "no"],
         "default": "no"
-        },
+        },        
     "filter": {
         "label": "Would you like to add a scaling filter? If the is far too big to be shown in the space you've allotted for it, the module will try to find another image for you. This only applies in random mode. If XKCD is not the only module you are showing, I recommend setting this to 'no'.",
         "options": ["yes", "no"],
@@ -53,6 +57,7 @@ class Xkcd(inkycal_module):
     config = config['config']
    
     self.mode = config['mode']
+    self.palette = config['palette']
     self.alt = config['alt']
     self.scale_filter = config['filter']
 
@@ -149,14 +154,15 @@ class Xkcd(inkycal_module):
     else:
         altHeight = 0 # this is added so that I don't need to add more "if alt is yes" conditionals when centering below. Now the centering code will work regardless of whether they want alttext or not
       
-    comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))  
+    comicSpaceBlack = Image.new('RGBA', (im_width, im_height), (255,255,255,255))  
+    comicSpaceColour = Image.new('RGBA', (im_width, im_height), (255,255,255,255)) 
       
     im = Images()
     im.load(tmpPath+'xkcdComic.png')
     im.remove_alpha()
     imageScale = 4/5
     im.resize( width=int(im_width*imageScale), height=int(im_height*imageScale) )
-    im_comic_black, im_comic_colour = im.to_palette('bw')    
+    im_comic_black, im_comic_colour = im.to_palette(self.palette)    
     
     headerHeight = int(line_height*3/2)    
 
@@ -165,8 +171,12 @@ class Xkcd(inkycal_module):
     altCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2)+headerHeight+im.image.height)
     
     centerPosX = int((im_width/2)-(im.image.width/2))
-    comicSpace.paste(im_comic_black, (centerPosX, comicCenterPosY))
-    im_black.paste(comicSpace)
+    
+    comicSpaceBlack.paste(im_comic_black, (centerPosX, comicCenterPosY))
+    im_black.paste(comicSpaceBlack)
+    
+    comicSpaceColour.paste(im_comic_colour, (centerPosX, comicCenterPosY))
+    im_colour.paste(comicSpaceColour)
     
     im.clear()
     logger.info(f'added comic image')    
