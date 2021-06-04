@@ -11,6 +11,8 @@ from dateutil.tz import *
 from datetime import *
 import os
 
+from inkycal.modules.inky_image import Inkyimage as Images
+
 try:
   import xkcd
 except ImportError:
@@ -107,6 +109,7 @@ class Xkcd(inkycal_module):
     if self.mode == 'random':
         if self.scale_filter == 'no':
             xkcdComic = xkcd.getRandomComic()
+            xkcdComic.download(output=tmpPath, outputFile='xkcdComic.png')
         else:
             perc = (2.1,0.4)
             url = "test variable, not a real comic"
@@ -145,22 +148,29 @@ class Xkcd(inkycal_module):
         altHeight = int(line_height*len(alt_lines))
     else:
         altHeight = 0 # this is added so that I don't need to add more "if alt is yes" conditionals when centering below. Now the centering code will work regardless of whether they want alttext or not
-        
-    comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))
-    comicImage = Image.open(tmpPath+'/xkcdComic.png')    
-    headerHeight = int(line_height*3/2)
-
-    comicImage.thumbnail((im_width,im_height-headerHeight), Image.BICUBIC)
-    centerPosX = int((im_width/2)-(comicImage.width/2))
-
-    headerCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2))
-    comicCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight)
-    altCenterPosY = int((im_height/2)-((comicImage.height+headerHeight+altHeight)/2)+headerHeight+comicImage.height)
-
-    comicSpace.paste(comicImage, (centerPosX, comicCenterPosY))
-    logger.info(f'added comic image')
+      
+    comicSpace = Image.new('RGBA', (im_width, im_height), (255,255,255,255))  
+      
+    im = Images()
+    im.load(tmpPath+'movies.jpg')
+    im.remove_alpha()
+    imageScale = 4/5
+    im.resize( width=int(im_width*imageScale), height=int(im_height*imageScale) )
+    im_comic_black, im_comic_colour = im.to_palette('bw')    
     
+    headerHeight = int(line_height*3/2)    
+
+    headerCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2))
+    comicCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2)+headerHeight)
+    altCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2)+headerHeight+im.image.height)
+    
+    centerPosX = int((im_width/2)-(im.image.width/2))
+    comicSpace.paste(im_comic_black, (centerPosX, comicCenterPosY))
     im_black.paste(comicSpace)
+    
+    im.clear()
+    logger.info(f'added comic image')    
+   
     # Write the title on the black image 
     write(im_black, (0, headerCenterPosY), (line_width, line_height),
               title_lines[0], font = self.font, alignment= 'center')
@@ -172,7 +182,7 @@ class Xkcd(inkycal_module):
                     alt_lines[_], font = self.font, alignment='center')
 
     # Save image of black and colour channel in image-folder
-    return im_black, im_colour
+    return im_black, im_colour  
 
 if __name__ == '__main__':
   print(f'running {filename} in standalone/debug mode')
