@@ -134,7 +134,7 @@ class Xkcd(inkycal_module):
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
     
-    altOffset = 10
+    altOffset = int(line_height*1)
     
     if self.alt == "yes":
         alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
@@ -169,13 +169,18 @@ class Xkcd(inkycal_module):
     if comicAspectRatio > imageAspectRatio:
         imageScale = im_width / im.image.width
     else:
-        imageScale = (im_height - (headerHeight+altHeight)) / im.image.height
+        imageScale = im_height / im.image.height        
         
-    im.resize( width=int(im.image.width * imageScale), height=int(im.image.height * imageScale) )        
-    
-    im_comic_black, im_comic_colour = im.to_palette(self.palette)    
+    comicHeight = int(im.image.height * imageScale)      
     
     headerHeight = int(line_height*3/2)    
+    
+    if comicHeight + (headerHeight+altHeight) > im_height:
+        comicHeight -= (headerHeight+altHeight)
+    
+    im.resize( width=int(im.image.width * imageScale), height= comicHeight)        
+    
+    im_comic_black, im_comic_colour = im.to_palette(self.palette)  
 
     headerCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2))
     comicCenterPosY = int((im_height/2)-((im.image.height+headerHeight+altHeight)/2)+headerHeight)
