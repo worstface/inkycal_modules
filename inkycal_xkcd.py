@@ -35,7 +35,7 @@ class Xkcd(inkycal_module):
         "default": "latest"      
         },
     "palette": {
-        "label":"Which palette should be used for converting images?",
+        "label":"Which color palette should be used for the comic images?",
         "options": ["bw", "bwr", "bwy"]
         },
     "alt": {
