@@ -160,8 +160,14 @@ class Xkcd(inkycal_module):
     im = Images()
     im.load(tmpPath+'xkcdComic.png')
     im.remove_alpha()
-    imageScale = 4/5
-    im.resize( width=int(im_width*imageScale), height=int(im_height*imageScale) )
+    
+    imageAspectRatio = im_width / im_height
+    comicAspectRatio = im.image.width / im.image.height
+    
+    if comicAspectRatio > imageAspectRatio:
+        imageScale = im.image.width / im_width
+        im.resize( width=int(im.image.width / imageScale), height=int(im.image.height / imageScale) )
+    
     im_comic_black, im_comic_colour = im.to_palette(self.palette)    
     
     headerHeight = int(line_height*3/2)    
