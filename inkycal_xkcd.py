@@ -134,6 +134,8 @@ class Xkcd(inkycal_module):
     title_lines = []
     title_lines.append(xkcdComic.getTitle())
     
+    altOffset = 10
+    
     if self.alt == "yes":
         alt_text = xkcdComic.getAltText() # get the alt text, too (I break it up into multiple lines later on)
    
@@ -150,7 +152,7 @@ class Xkcd(inkycal_module):
                 alt_lines.append(current_line)
                 current_line = _ + " "
         alt_lines.append(current_line) # this adds the last line to the array (or the only line, if the alt text is really short)
-        altHeight = int(line_height*len(alt_lines))
+        altHeight = int(line_height*len(alt_lines)) + altOffset
     else:
         altHeight = 0 # this is added so that I don't need to add more "if alt is yes" conditionals when centering below. Now the centering code will work regardless of whether they want alttext or not
       
@@ -192,13 +194,13 @@ class Xkcd(inkycal_module):
    
     # Write the title on the black image 
     write(im_black, (0, headerCenterPosY), (line_width, line_height),
-              title_lines[0], font = self.font, alignment= 'center')
+              title_lines[0], font = self.font, alignment= 'center')    
     
     if self.alt == "yes":
         # write alt_text
         for _ in range(len(alt_lines)):
-          write(im_black, (0, altCenterPosY+_*line_height), (line_width, line_height),
-                    alt_lines[_], font = self.font, alignment='center')
+          write(im_black, (0, altCenterPosY+_*line_height + altOffset), (line_width, line_height),
+                    alt_lines[_], font = self.font, alignment='left')
 
     # Save image of black and colour channel in image-folder
     return im_black, im_colour  
