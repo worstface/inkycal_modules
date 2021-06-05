@@ -163,10 +163,13 @@ class Xkcd(inkycal_module):
     
     imageAspectRatio = im_width / im_height
     comicAspectRatio = im.image.width / im.image.height
-    
+        
     if comicAspectRatio > imageAspectRatio:
-        imageScale = im.image.width / im_width
-        im.resize( width=int(im.image.width / imageScale), height=int(im.image.height / imageScale) )
+        imageScale = im_width / im.image.width
+    else:
+        imageScale = (im_height - (headerHeight+altHeight)) / im.image.height
+        
+    im.resize( width=int(im.image.width * imageScale), height=int(im.image.height * imageScale) )        
     
     im_comic_black, im_comic_colour = im.to_palette(self.palette)    
     
