@@ -49,7 +49,7 @@ pip3 install xkcd
 ```
 4) Add module to Inkycal/inkycal/__init__.py and Inkycal/inkycal/modules/__init__.py
 
-```
+
 
 # Inkycal Tweets Module
 <p align="center">
@@ -61,7 +61,7 @@ It shows the chronologically last tweet defined by a filter which can contain a 
 The tweet is displayed whith a header, which contains the name, username and timestamp. It contains the text including a QR-code with a link to the tweet. 
 Below the tweet a footer is drawn, which shows the number of comments, retweets and likes.
 
-```
+
 # Installation instructions
 1) Navigate to the modules directory
 `cd Inkycal/inkycal/modules`
@@ -83,4 +83,4 @@ pip3 install segno
 
 5) Add material-icons font (fonts folder)
 
-5) Add module to Inkycal/inkycal/'__init__'.py and Inkycal/inkycal/modules/'__init__'.py
+5) Add module to Inkycal/inkycal/__init__.py and Inkycal/inkycal/modules/__init__.py
