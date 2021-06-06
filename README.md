@@ -20,7 +20,7 @@ It's easily setup with a string of comma separated symbols like this e.g.:
 
 2) Download the third-party module:
 ```bash
-wget https://raw.githubusercontent.com/worstface/inkycal_stocks/master/inkycal_stocks.py
+wget https://raw.githubusercontent.com/worstface/inkycal_modules/master/inkycal_stocks.py
 ```
 
 3) Install yfinance:
@@ -40,7 +40,7 @@ pip3 install yfinance
 
 2) Download the third-party module:
 ```bash
-wget https://raw.githubusercontent.com/worstface/inkycal_stocks/master/inkycal_xkcd.py
+wget https://raw.githubusercontent.com/worstface/inkycal_modules/master/inkycal_xkcd.py
 ```
 
 3) Install xkcd lib:
@@ -68,7 +68,7 @@ Below the tweet a footer is drawn, which shows the number of comments, retweets 
 
 2) Download the third-party module:
 ```bash
-wget https://raw.githubusercontent.com/worstface/inkycal_stocks/master/inkycal_tweets.py
+wget https://raw.githubusercontent.com/worstface/inkycal_modules/master/inkycal_tweets.py
 ```
 
 3) Install current twint lib:
