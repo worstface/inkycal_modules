@@ -145,6 +145,13 @@ class Stocks(inkycal_module):
       except Exception:
         stockCurrency = ''
         logger.warning(f"Failed to get ticker currency!")
+        
+      try:
+        precision = stockInfo['priceHint']
+      except Exception:
+        precision = 2
+        logger.warning(f"Failed to get '{stockName}' ticker price hint! Using "
+                       "default precision of 2 instead.")
 
       stockHistory = yfTicker.history("30d")
       stockHistoryLen = len(stockHistory)
@@ -158,17 +165,26 @@ class Stocks(inkycal_module):
       currentGainPercentage = (1-currentQuote/previousQuote)*-100
       firstQuote = stockHistory.tail(stockHistoryLen)['Close'].iloc[0]
       logger.info(f'firstQuote {firstQuote} ...')
+      
+      def floatStr(precision, number):
+        return "%0.*f" % (precision, number)
+        
+      def percentageStr(number):
+        return '({:+.2f}%)'.format(number)
+      
+      def gainStr(number):      
+        return '{:+.3f}'.format(number)
 
-      stockNameLine = stockName
-      stockCurrentValueLine = '{:.2f}{} {:+.2f}{} ({:+.2f}%)'.format(
-        currentQuote, stockCurrency, currentGain, stockCurrency, currentGainPercentage)
-      stockDayValueLine = '1d OHL: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
-        currentOpen, stockCurrency, currentHigh, stockCurrency, currentLow, stockCurrency)
+      stockNameLine = '{} ({})'.format(stockName, stockCurrency)
+      stockCurrentValueLine = '{} {} {}'.format(
+        floatStr(precision, currentQuote), gainStr(currentGain), percentageStr(currentGainPercentage))
+      stockDayValueLine = '1d OHL: {}/{}/{}'.format(
+        floatStr(precision, currentOpen), floatStr(precision, currentHigh), floatStr(precision, currentLow))
       maxQuote = max(stockHistory.High)
       minQuote = min(stockHistory.Low)
       logger.info(f'high {maxQuote} low {minQuote} ...')
-      stockMonthValueLine = '{}d OHL: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
-        stockHistoryLen,firstQuote,stockCurrency,maxQuote,stockCurrency,minQuote,stockCurrency)
+      stockMonthValueLine = '{}d OHL: {}/{}/{}'.format(
+        stockHistoryLen,floatStr(precision, firstQuote),floatStr(precision, maxQuote),floatStr(precision, minQuote))
 
       logger.info(stockNameLine)
       logger.info(stockCurrentValueLine)
