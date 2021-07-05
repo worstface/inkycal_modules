@@ -162,12 +162,12 @@ class Stocks(inkycal_module):
       stockNameLine = stockName
       stockCurrentValueLine = '{:.2f}{} {:+.2f}{} ({:+.2f}%)'.format(
         currentQuote, stockCurrency, currentGain, stockCurrency, currentGainPercentage)
-      stockDayValueLine = '1d op/hi/lo: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
+      stockDayValueLine = '1d OHL: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
         currentOpen, stockCurrency, currentHigh, stockCurrency, currentLow, stockCurrency)
       maxQuote = max(stockHistory.High)
       minQuote = min(stockHistory.Low)
       logger.info(f'high {maxQuote} low {minQuote} ...')
-      stockMonthValueLine = '{}d op/hi/lo: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
+      stockMonthValueLine = '{}d OHL: {:.2f}{}/{:.2f}{}/{:.2f}{}'.format(
         stockHistoryLen,firstQuote,stockCurrency,maxQuote,stockCurrency,minQuote,stockCurrency)
 
       logger.info(stockNameLine)
