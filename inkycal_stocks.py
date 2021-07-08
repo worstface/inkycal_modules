@@ -3,6 +3,7 @@
 """
 Stocks Module for Inkycal Project
 
+Version 0.5: Added improved precision by using new priceHint parameter of yfinance
 Version 0.4: Added charts
 Version 0.3: Added support for web-UI of Inkycal 2.0.0
 Version 0.2: Migration to Inkycal 2.0.0
